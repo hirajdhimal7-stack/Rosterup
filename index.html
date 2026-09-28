@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Roster">
+<title>Roster</title>
+<style>
+:root{--bg:#0A0E14;--surface:#12161F;--surface-2:#181D28;--border:#232838;--border-2:#2E3548;--text:#E8EAED;--text-dim:#8B92A5;--text-faint:#565D72;--gold:#E8A33D;--gold-dim:#8A6529;--green:#3FBF74;--green-dim:#1E4A32;--red:#F0625F;--red-dim:#4A2320;--mono:ui-monospace,'SF Mono',Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden}
+body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px 100px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 8px;max-width:560px;margin:0 auto}
+.brand{font-size:13px;letter-spacing:.14em;color:var(--text-faint);text-transform:uppercase;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.clock-txt{font-family:var(--mono);font-size:12px;color:var(--text-faint)}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--text-faint)}
+.sync-dot.ok{background:var(--green)}.sync-dot.busy{background:var(--gold);animation:pulse 1s infinite}.sync-dot.err{background:var(--red)}
+@keyframes pulse{50%{opacity:.35}}
+.icon-btn{width:30px;height:30px;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:15px;cursor:pointer}
+.tabs{display:flex;margin-top:14px;border-bottom:1px solid var(--border);overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 4px;margin-right:20px;font-size:13px;color:var(--text-faint);cursor:pointer;border-bottom:2px solid transparent;font-weight:600;white-space:nowrap}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.panel{display:none}.panel.visible{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-top:16px}
+.card-title{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+select,.text-input{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:var(--sans);font-size:14px;outline:none;-webkit-appearance:none;appearance:none;min-width:0}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238B92A5'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:28px}
+.text-input::placeholder{color:var(--text-faint)}
+.field-row{display:flex;gap:8px;margin-bottom:10px}
+.add-btn{width:100%;padding:13px 0;border-radius:10px;border:none;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;background:var(--gold);color:#1A1200}
+.add-btn:active{opacity:.85}
+.add-btn.secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--border-2)}
+.hint{font-size:12px;color:var(--text-faint);margin-top:10px;line-height:1.5}
+.dow-row{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
+.dow-cell{text-align:center;padding:10px 2px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;font-size:11px;font-weight:600;color:var(--text-faint)}
+.dow-cell .d{font-size:9px;text-transform:uppercase;display:block}
+.dow-cell.on{background:var(--jc-dim);border-color:var(--jc);color:var(--jc)}
+.job-card{border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:14px}
+.job-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.job-color-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto;margin-right:8px}
+.job-title-row{display:flex;align-items:center;flex:1;min-width:0}
+.job-name-input{background:transparent;border:none;color:var(--text);font-size:15px;font-weight:700;outline:none;flex:1;min-width:0;padding:2px 0}
+.job-del{color:var(--text-faint);font-size:18px;cursor:pointer;padding:2px 6px}
+.week-label{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-top:12px;font-weight:600;display:flex;justify-content:space-between}
+.week-label span[data-a]{cursor:pointer;text-transform:none;font-weight:400}
+.anchor-hint{font-size:11.5px;color:var(--text-faint);margin-top:10px}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lbl{font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:block}
+.cal-head,.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-head{margin:6px 0 8px}
+.cal-head span{text-align:center;font-size:11px;color:var(--text-faint);text-transform:uppercase;font-weight:600}
+.cal-cell{min-height:92px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);padding:6px;display:flex;flex-direction:column;cursor:pointer;overflow:hidden}
+.cal-cell.empty{background:transparent;border-color:transparent;cursor:default}
+.cal-cell.today{border:2px solid var(--gold)}
+.cal-cell.selected{background:var(--surface);box-shadow:0 0 0 1px var(--gold-dim) inset;border-color:var(--gold)}
+.cal-daynum{font-family:var(--mono);font-size:13px;color:var(--text-dim);font-weight:700}
+.cal-cell.today .cal-daynum{color:var(--gold)}
+.chips{display:flex;flex-direction:column;gap:3px;margin-top:5px;flex:1;overflow:hidden}
+.chip{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--cb);color:var(--cf)}
+.chip.extra{border:1px dashed currentColor}
+.dd{background:var(--surface-2);border:1px solid var(--border-2);border-radius:12px;padding:14px;margin-top:14px}
+.dd-title{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.dd-title .x{cursor:pointer;color:var(--text-faint);font-size:18px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:9px 2px;border-bottom:1px solid var(--border);gap:8px}
+.row:last-child{border-bottom:none}
+.row-l{display:flex;align-items:center;gap:8px;min-width:0;font-size:13.5px}
+.st{font-size:11px;padding:4px 10px;border-radius:100px;cursor:pointer;font-weight:600}
+.st.working{background:var(--green-dim);color:var(--green)}
+.st.off{background:var(--surface);color:var(--text-faint);border:1px solid var(--border-2)}
+.hin{width:66px;flex:0 0 auto;background:var(--surface);border:1px solid var(--border-2);border-radius:8px;padding:7px 6px;color:var(--text);font-family:var(--mono);font-size:13px;text-align:right;outline:none}
+.hin.logged{border-color:var(--gold);color:var(--gold)}
+.quick-add{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:12px}
+.banner{display:flex;align-items:flex-start;justify-content:space-between;background:var(--surface-2);border:1px solid var(--gold-dim);border-radius:10px;padding:12px 14px;margin-top:16px;font-size:12.5px;color:var(--gold);gap:10px}
+.banner .x{cursor:pointer;color:var(--text-dim);font-size:16px}
+.status-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);margin-bottom:12px}
+.pnav{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.plabel{font-size:15px;font-weight:700;text-align:center;flex:1}
+.psub{font-size:11.5px;color:var(--text-faint);text-align:center;margin-top:2px}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stat{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.stat .k{font-size:11px;color:var(--text-faint)}
+.stat .v{font-family:var(--mono);font-size:20px;font-weight:700;margin-top:4px}
+.stat .v.g{color:var(--green)}.stat .s{font-size:11px;color:var(--text-dim);margin-top:2px;font-family:var(--mono)}
+.tot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;padding:8px 2px;color:var(--text-dim)}
+.tot b{color:var(--text)}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="brand">Roster</div><div class="topbar-right"><div class="clock-txt" id="clockTxt"></div><div class="sync-dot" id="syncDot"></div></div></div>
+<div class="wrap">
+<div class="tabs">
+  <div class="tab active" data-a="tab" data-p="calPanel">Calendar</div>
+  <div class="tab" data-a="tab" data-p="payPanel">Pay</div>
+  <div class="tab" data-a="tab" data-p="jobsPanel">Jobs &amp; Pattern</div>
+  <div class="tab" data-a="tab" data-p="syncPanel">Sync</div>
+</div>
+
+<div class="panel visible" id="calPanel">
+  <div id="upcomingBanner"></div>
+  <div class="card">
+    <div class="card-title"><span id="calMonthLabel"></span>
+      <span style="display:flex;align-items:center;gap:10px"><span class="icon-btn" data-a="prev">‹</span><span class="icon-btn" data-a="today" style="font-size:11px">•</span><span class="icon-btn" data-a="next">›</span></span></div>
+    <div class="cal-head" id="calHead"></div><div class="cal-grid" id="calGrid"></div>
+  </div>
+  <div id="selectedDayDetail"></div>
+</div>
+
+<div class="panel" id="payPanel">
+  <div class="card">
+    <div id="pJobSel" style="margin-bottom:14px"></div>
+    <div class="pnav"><span class="icon-btn" data-a="pprev">‹</span><div style="flex:1"><div class="plabel" id="pLabel"></div><div class="psub" id="pSub"></div></div><span class="icon-btn" data-a="pnext">›</span></div>
+    <div id="pSummary"></div>
+  </div>
+  <div class="card"><div class="card-title">Hours this period</div><div id="pRows"></div>
+    <div class="hint">Hours default to each job's normal shift length. Change a number to log what you actually worked (it turns gold). Clear the box to go back to the default.</div></div>
+  <div class="card"><div class="card-title">Pay settings</div><div id="pSettings"></div></div>
+</div>
+
+<div class="panel" id="jobsPanel">
+  <div class="card">
+    <div class="card-title">Your jobs &amp; rotation</div>
+    <div class="hint" style="margin-top:0">Set each job's rotation weeks, hourly rate, and normal shift length. Tap a day to toggle it for that week.</div>
+    <div id="jobsList"></div>
+    <button class="add-btn secondary" data-a="addJob" style="margin-top:16px">+ Add a job</button>
+  </div>
+</div>
+
+<div class="panel" id="syncPanel">
+  <div class="card">
+    <div class="card-title">Cloud sync</div>
+    <div class="status-row"><div class="sync-dot" id="syncDot2"></div><span id="syncStatusText">Not connected</span></div>
+    <div class="field-row"><input type="text" class="text-input" id="syncUrlInput" placeholder="Apps Script web app URL"></div>
+    <button class="add-btn" data-a="connect">Connect</button>
+    <button class="add-btn secondary" data-a="syncNow" style="margin-top:8px">Sync now</button>
+    <button class="add-btn secondary" id="copyLinkBtn" data-a="copy" style="margin-top:8px;display:none">Copy link for another device</button>
+    <div class="hint" id="lastSyncHint"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Full backup</div>
+    <button class="add-btn secondary" data-a="export">Download full backup</button>
+    <div class="field-row" style="margin-top:10px"><input type="file" accept="application/json" class="text-input" id="restoreFileInput" style="padding:9px 10px"></div>
+    <button class="add-btn secondary" data-a="restore">Restore from backup file</button>
+    <div class="hint" id="restoreStatus"></div>
+  </div>
+</div>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const PAL=[{fg:'#3FBF74',bg:'#1E4A32'},{fg:'#5B9FE8',bg:'#1E3A5C'},{fg:'#E8A33D',bg:'#4A360F'},{fg:'#C77DE0',bg:'#3B1F47'},{fg:'#F0625F',bg:'#4A2320'},{fg:'#4DD4C4',bg:'#0F3D38'}];
+const pad=n=>String(n).padStart(2,'0');
+const fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; // local date (not UTC)
+const P=s=>new Date(s+'T00:00:00');
+const addD=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
+const sow=d=>{const r=new Date(d);r.setHours(0,0,0,0);r.setDate(r.getDate()-r.getDay());return r};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML};
+const money=n=>'$'+n.toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
+const nh=n=>(Math.round(n*100)/100).toString();
+const ls=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
+const short=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const col=j=>PAL[j.colorIdx%PAL.length];
+const blank=()=>[0,0,0,0,0,0,0].map(()=>false);
+
+let jobs=[],delJ=[],ov=[],delO=[],H={},S={type:'biweekly',start:'',tax:0,otMult:1.5,mod:0};
+let syncUrl='',timer=null,pushT=null,sel=null,pOff=0,pJob=null;
+const n0=new Date();let cal={y:n0.getFullYear(),m:n0.getMonth()};
+
+function load(){
+  jobs=ls('roster_jobs',[]);delJ=ls('roster_deleted_jobs',[]);ov=ls('roster_overrides',[]);delO=ls('roster_deleted_overrides',[]);
+  H=ls('roster_hours',{});Object.assign(S,ls('roster_settings',{}));syncUrl=localStorage.getItem('roster_sync_url')||'';
+  const sun=fmt(sow(new Date()));
+  if(!jobs.length){
+    jobs=[{id:uid(),name:'Craigwiel Gardens',colorIdx:0,weeks:[[1,0,0,1,1,0,0].map(Boolean),[0,1,1,0,0,1,1].map(Boolean)],anchor:sun},
+          {id:uid(),name:'Other Job',colorIdx:1,weeks:[[1,0,1,0,1,0,1].map(Boolean),[0,0,0,0,1,0,0].map(Boolean),[1,0,1,0,0,0,1].map(Boolean),[0,0,1,0,0,1,0].map(Boolean)],anchor:sun}];
+  }
+  jobs.forEach(j=>{ // migrate old formats + new pay fields
+    if(!j.weeks&&j.weekA){j.weeks=[j.weekA,j.weekB];delete j.weekA;delete j.weekB}
+    norm(j);
+  });
+  if(!S.start)S.start=sun;
+  save(true);
+}
+function save(local){
+  localStorage.setItem('roster_jobs',JSON.stringify(jobs));localStorage.setItem('roster_deleted_jobs',JSON.stringify(delJ));
+  localStorage.setItem('roster_overrides',JSON.stringify(ov));localStorage.setItem('roster_deleted_overrides',JSON.stringify(delO));
+  localStorage.setItem('roster_hours',JSON.stringify(H));localStorage.setItem('roster_settings',JSON.stringify(S));
+  if(!local&&syncUrl){clearTimeout(pushT);pushT=setTimeout(()=>push(true),800)}
+}
+const norm=j=>{j.rate=+j.rate||0;j.hrs=j.hrs==null?8:+j.hrs;j.ot=+j.ot||0;j.ptype=j.ptype||S.type||'biweekly';j.pstart=j.pstart||S.start||fmt(sow(new Date()))};
+const touch=o=>{o.mod=Date.now();return o};
+
+/* ---------- sync (newest edit wins per item) ---------- */
+function setSync(state,text){[$('syncDot'),$('syncDot2')].forEach(d=>d.className='sync-dot'+(state?' '+state:''));if(text)$('syncStatusText').textContent=text}
+function mergeList(local,remote,del){const m={};local.forEach(x=>m[x.id]=x);remote.forEach(x=>{const c=m[x.id];if(!c||(x.mod||0)>(c.mod||0))m[x.id]=x});return Object.values(m).filter(x=>!del.includes(x.id))}
+function merge(r){
+  if(!r||typeof r!=='object')return;
+  const arr=v=>Array.isArray(v)?v:[];
+  delJ=[...new Set([...delJ,...arr(r.deletedJobIds)])];delO=[...new Set([...delO,...arr(r.deletedOverrideIds)])];
+  jobs=mergeList(jobs,arr(r.jobs),delJ);ov=mergeList(ov,arr(r.overrides),delO);
+  if(r.hours&&typeof r.hours==='object')Object.entries(r.hours).forEach(([k,v])=>{if(!H[k]||(v.mod||0)>(H[k].mod||0))H[k]=v});
+  if(r.settings&&(r.settings.mod||0)>(S.mod||0))S=Object.assign(S,r.settings);
+  jobs.forEach(norm);
+  save(true);
+}
+const payload=()=>({jobs,deletedJobIds:delJ,overrides:ov,deletedOverrideIds:delO,hours:H,settings:S,updatedAt:new Date().toISOString()});
+const stamp=()=>{$('lastSyncHint').textContent='Last synced '+new Date().toLocaleTimeString('en-US')};
+async function pull(){
+  if(!syncUrl)return;setSync('busy','Syncing…');
+  try{const r=await fetch(syncUrl+(syncUrl.includes('?')?'&':'?')+'_='+Date.now());merge(await r.json());await push(true);setSync('ok','Synced');stamp();renderAll()}
+  catch(e){setSync('err','Sync failed — check the URL or your connection')}
+}
+async function push(silent){
+  if(!syncUrl)return;if(!silent)setSync('busy','Syncing…');
+  try{await fetch(syncUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload())});if(!silent){setSync('ok','Synced');stamp()}}
+  catch(e){if(!silent)setSync('err','Sync failed — check the URL or your connection')}
+}
+function autoSync(){clearInterval(timer);if(syncUrl)timer=setInterval(pull,20000)}
+
+/* ---------- schedule ---------- */
+function isSch(j,ds){
+  const diff=Math.round((sow(P(ds))-sow(P(j.anchor)))/(7*864e5));const n=j.weeks.length;
+  return !!j.weeks[((diff%n)+n)%n][P(ds).getDay()];
+}
+function shifts(ds){
+  const r=[];
+  jobs.forEach(j=>{
+    const rm=ov.some(o=>o.jobId===j.id&&o.date===ds&&o.type==='remove');
+    if(isSch(j,ds)&&!rm)r.push({job:j,kind:'regular'});
+    ov.forEach(o=>{if(o.jobId===j.id&&o.date===ds&&o.type==='add')r.push({job:j,kind:'extra',note:o.note})});
+  });
+  return r;
+}
+const logged=(j,ds)=>{const h=H[j.id+'|'+ds];return !!h&&h.hours!=null};
+const hrs=(j,ds)=>logged(j,ds)?H[j.id+'|'+ds].hours:shifts(ds).filter(s=>s.job.id===j.id).length*j.hrs;
+function setHours(jid,ds,v){
+  const k=jid+'|'+ds,x=parseFloat(v);
+  H[k]=touch({id:k,jobId:jid,date:ds,hours:(v===''||isNaN(x)||x<0)?null:x});
+}
+
+/* ---------- pay ---------- */
+function period(off,j){
+  const t=new Date();t.setHours(0,0,0,0);let s,e;
+  if(j.ptype==='weekly'||j.ptype==='biweekly'){
+    const L=j.ptype==='weekly'?7:14,i=Math.floor(Math.round((t-P(j.pstart))/864e5)/L)+off;
+    s=addD(P(j.pstart),i*L);e=addD(s,L-1);
+  }else if(j.ptype==='semi'){
+    const k=t.getFullYear()*24+t.getMonth()*2+(t.getDate()>15?1:0)+off,y=Math.floor(k/24),m=Math.floor(k%24/2);
+    s=new Date(y,m,k%2?16:1);e=k%2?new Date(y,m+1,0):new Date(y,m,15);
+  }else{
+    const k=t.getFullYear()*12+t.getMonth()+off;s=new Date(Math.floor(k/12),k%12,1);e=new Date(Math.floor(k/12),k%12+1,0);
+  }
+  return{s,e};
+}
+function calc(list,s,e,upto){ // overtime is weekly (Sun–Sat) per job
+  return list.map(j=>{
+    const wk={};let days=0;
+    for(let d=new Date(s);d<=e;d=addD(d,1)){
+      const ds=fmt(d);if(upto&&ds>upto)break;
+      const h=hrs(j,ds);if(h>0){days++;const k=fmt(sow(d));wk[k]=(wk[k]||0)+h}
+    }
+    let tot=0,ot=0;Object.values(wk).forEach(w=>{tot+=w;if(j.ot>0&&w>j.ot)ot+=w-j.ot});
+    return{job:j,days,hours:tot,ot,pay:(tot-ot)*j.rate+ot*j.rate*S.otMult};
+  });
+}
+const sum=(a,k)=>a.reduce((t,x)=>t+x[k],0);
+
+function renderPay(){
+  if(!jobs.length){$('pJobSel').innerHTML='';$('pLabel').textContent='';$('pSub').textContent='';$('pSummary').innerHTML='<div class="hint">Add a job first.</div>';$('pRows').innerHTML='';$('pSettings').innerHTML='';return}
+  const j=jobOf(pJob)||jobs[0];pJob=j.id;
+  $('pJobSel').innerHTML=`<select data-f="pjob" style="width:100%">${jobs.map(x=>`<option value="${x.id}" ${x.id===j.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select>`;
+  const{s,e}=period(pOff,j),td=fmt(new Date()),ef=fmt(e);
+  const[f]=calc([j],s,e),[d]=calc([j],s,e,td<ef?td:null),tax=(+S.tax||0)/100,c=col(j);
+  $('pLabel').textContent=`${short(s)} – ${short(e)}, ${e.getFullYear()}`;
+  $('pSub').textContent=td>=fmt(s)&&td<=ef?'Current pay period':(td>ef?'Past pay period':'Upcoming pay period');
+  $('pSummary').innerHTML=`
+    <div class="big">
+      <div class="stat"><div class="k">Earned so far</div><div class="v g">${money(d.pay)}</div><div class="s">${nh(d.hours)} hrs</div></div>
+      <div class="stat"><div class="k">Full period</div><div class="v">${money(f.pay)}</div><div class="s">${nh(f.hours)} hrs</div></div>
+    </div>
+    <div class="tot"><span>${nh(f.hours)} hrs${f.ot>0?` (${nh(f.ot)} OT)`:''} × ${money(j.rate)}/hr</span><b>${money(f.pay)}</b></div>
+    ${tax>0?`<div class="tot"><span>Est. take-home (−${S.tax}% tax)</span><b>${money(f.pay*(1-tax))}</b></div>`:''}`;
+  let rows='';
+  for(let x=new Date(s);x<=e;x=addD(x,1)){
+    const ds=fmt(x),h=hrs(j,ds);if(!(h>0||logged(j,ds)))continue;
+    rows+=`<div class="row"><div class="row-l"><span class="job-color-dot" style="background:${c.fg}"></span>${x.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div>
+      <input type="number" inputmode="decimal" step="0.25" min="0" class="hin ${logged(j,ds)?'logged':''}" data-f="hin" data-j="${j.id}" data-d="${ds}" value="${nh(h)}"></div>`;
+  }
+  $('pRows').innerHTML=rows||'<div class="hint" style="margin-top:0">No shifts in this period.</div>';
+  const o=(v,l)=>`<option value="${v}" ${j.ptype===v?'selected':''}>${l}</option>`,wk=j.ptype==='weekly'||j.ptype==='biweekly';
+  $('pSettings').innerHTML=`
+    <div class="hint" style="margin:0 0 10px">Pay period for <b style="color:var(--text)">${esc(j.name)}</b> — each job has its own.</div>
+    <div class="field-row"><div style="flex:1"><span class="lbl">Pay frequency</span><select data-f="job" data-k="ptype" data-id="${j.id}" style="width:100%">${o('weekly','Weekly')}${o('biweekly','Every 2 weeks')}${o('semi','Twice a month (1st & 16th)')}${o('monthly','Monthly')}</select></div></div>
+    ${wk?`<div class="field-row"><div style="flex:1"><span class="lbl">A pay period started on</span><input type="date" class="text-input" style="width:100%" data-f="job" data-k="pstart" data-id="${j.id}" value="${j.pstart}"></div></div>`:''}
+    <div class="trio" style="grid-template-columns:1fr 1fr"><div><span class="lbl">Tax withheld % (all jobs)</span><input type="number" inputmode="decimal" min="0" max="100" class="text-input" style="width:100%" data-f="set" data-k="tax" value="${S.tax||0}"></div>
+    <div><span class="lbl">Overtime multiplier</span><input type="number" inputmode="decimal" step="0.05" min="1" class="text-input" style="width:100%" data-f="set" data-k="otMult" value="${S.otMult}"></div></div>
+    <div class="hint">Overtime applies per Sun–Sat week once you set "OT after" hours on the job (0 = none).</div>`;
+}
+
+/* ---------- jobs ---------- */
+function renderJobs(){
+  const el=$('jobsList');
+  if(!jobs.length){el.innerHTML='<div class="hint">No jobs yet — add one below.</div>';return}
+  el.innerHTML=jobs.map(j=>{const c=col(j);return `
+    <div class="job-card" style="--jc:${c.fg};--jc-dim:${c.bg}">
+      <div class="job-card-head"><div class="job-title-row"><span class="job-color-dot" style="background:${c.fg}"></span>
+        <input type="text" class="job-name-input" value="${esc(j.name)}" data-f="job" data-k="name" data-id="${j.id}"></div>
+        <span class="job-del" data-a="delJob" data-id="${j.id}">×</span></div>
+      <div class="trio">
+        <div><span class="lbl">Hourly rate $</span><input type="number" inputmode="decimal" step="0.01" min="0" class="text-input" style="width:100%" data-f="job" data-k="rate" data-id="${j.id}" value="${j.rate}"></div>
+        <div><span class="lbl">Shift hours</span><input type="number" inputmode="decimal" step="0.25" min="0" class="text-input" style="width:100%" data-f="job" data-k="hrs" data-id="${j.id}" value="${j.hrs}"></div>
+        <div><span class="lbl">OT after hrs/wk</span><input type="number" inputmode="decimal" min="0" class="text-input" style="width:100%" data-f="job" data-k="ot" data-id="${j.id}" value="${j.ot}"></div>
+      </div>
+      ${j.weeks.map((w,wi)=>`<div class="week-label"><span>Week ${wi+1}</span>${j.weeks.length>1?`<span data-a="delWeek" data-id="${j.id}" data-w="${wi}">remove week</span>`:''}</div>
+        <div class="dow-row">${WD.map((d,i)=>`<div class="dow-cell ${w[i]?'on':''}" data-a="dow" data-id="${j.id}" data-w="${wi}" data-day="${i}"><span class="d">${d}</span></div>`).join('')}</div>`).join('')}
+      <button class="add-btn secondary" data-a="addWeek" data-id="${j.id}" style="margin-top:12px;padding:9px 0;font-size:13px">+ Add another week to rotation</button>
+      <div class="anchor-hint">Week 1 starts the week of <input type="date" class="text-input" style="display:inline-block;width:auto;padding:6px 8px;font-size:12px" data-f="job" data-k="anchor" data-id="${j.id}" value="${j.anchor}"> — repeats every ${j.weeks.length} week${j.weeks.length>1?'s':''}</div>
+    </div>`}).join('');
+}
+
+/* ---------- calendar ---------- */
+function renderCal(){
+  $('calMonthLabel').textContent=MN[cal.m]+' '+cal.y;
+  $('calHead').innerHTML=WD.map(w=>`<span>${w}</span>`).join('');
+  const off=new Date(cal.y,cal.m,1).getDay(),dim=new Date(cal.y,cal.m+1,0).getDate(),tk=fmt(new Date());
+  let h='<div class="cal-cell empty"></div>'.repeat(off);
+  for(let d=1;d<=dim;d++){
+    const ds=`${cal.y}-${pad(cal.m+1)}-${pad(d)}`;
+    h+=`<div class="cal-cell${ds===tk?' today':''}${ds===sel?' selected':''}" data-a="day" data-d="${ds}"><div class="cal-daynum">${d}</div><div class="chips">${
+      shifts(ds).map(s=>{const c=col(s.job);return `<div class="chip${s.kind==='extra'?' extra':''}" style="--cb:${c.bg};--cf:${c.fg}">${esc(s.job.name.slice(0,10))}${s.kind==='extra'?' +':''}</div>`}).join('')}</div></div>`;
+  }
+  $('calGrid').innerHTML=h;
+  renderDay();renderBanner();
+}
+function renderDay(){
+  const el=$('selectedDayDetail');if(!sel){el.innerHTML='';return}
+  const label=P(sel).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+  const head=`<div class="dd-title"><span>${label}</span><span class="x" data-a="closeDD">×</span></div>`;
+  if(!jobs.length){el.innerHTML=`<div class="dd">${head}<div class="hint">Add a job in the Jobs &amp; Pattern tab first.</div></div>`;return}
+  el.innerHTML=`<div class="dd">${head}
+    ${jobs.map(j=>{
+      const rm=ov.find(o=>o.jobId===j.id&&o.date===sel&&o.type==='remove'),sch=isSch(j,sel),work=sch&&!rm,c=col(j);
+      const n=shifts(sel).filter(s=>s.job.id===j.id).length;
+      return `<div class="row"><div class="row-l"><span class="job-color-dot" style="background:${c.fg};margin-right:0"></span>${esc(j.name)}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${n?`<input type="number" inputmode="decimal" step="0.25" min="0" class="hin ${logged(j,sel)?'logged':''}" data-f="hin" data-j="${j.id}" data-d="${sel}" value="${nh(hrs(j,sel))}" title="Hours worked"><span style="font-size:11px;color:var(--text-faint)">hrs</span>`:''}
+          <span class="st ${work?'working':'off'}" data-a="tog" data-id="${j.id}" data-sch="${sch}">${work?'Working':'Off'}</span></div></div>`}).join('')}
+    <div class="quick-add"><span class="lbl">Add extra shift (pickup / OT)</span>
+      <div class="field-row"><select id="extraJob">${jobs.map(j=>`<option value="${j.id}">${esc(j.name)}</option>`).join('')}</select></div>
+      <div class="field-row"><input type="text" class="text-input" id="extraNote" placeholder="Note (optional, e.g. covering for Sam)"></div>
+      <button class="add-btn secondary" data-a="addExtra">+ Add extra shift</button></div>
+    ${ov.filter(o=>o.date===sel&&o.type==='add').map(o=>{const j=jobs.find(x=>x.id===o.jobId);return `<div class="row"><div class="row-l">Extra: ${esc(j?j.name:'?')}${o.note?' — '+esc(o.note):''}</div><span class="job-del" data-a="delOv" data-id="${o.id}">×</span></div>`}).join('')}
+  </div>`;
+}
+function renderBanner(){
+  const el=$('upcomingBanner'),ds=localStorage.getItem('roster_banner_dismiss');
+  if(ds&&new Date(ds)>new Date()){el.innerHTML='';return}
+  const up=[];
+  for(let i=0;i<3;i++){const d=addD(new Date(),i);shifts(fmt(d)).forEach(s=>up.push(`${s.job.name} (${i===0?'today':i===1?'tomorrow':d.toLocaleDateString('en-US',{weekday:'short'})})`))}
+  el.innerHTML=up.length?`<div class="banner"><span>📅 Upcoming: ${esc(up.join(', '))}</span><span class="x" data-a="dismiss">×</span></div>`:'';
+}
+function renderAll(){renderCal();renderPay();renderJobs()}
+
+/* ---------- events ---------- */
+const mut=fn=>{fn();save();renderAll()};
+const jobOf=id=>jobs.find(j=>j.id===id);
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-a]');if(!t)return;
+  const a=t.dataset.a,id=t.dataset.id,j=jobOf(id);
+  switch(a){
+    case'tab':document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('visible',p.id===t.dataset.p));renderAll();break;
+    case'prev':cal.m--;if(cal.m<0){cal.m=11;cal.y--}renderCal();break;
+    case'next':cal.m++;if(cal.m>11){cal.m=0;cal.y++}renderCal();break;
+    case'today':{const n=new Date();cal={y:n.getFullYear(),m:n.getMonth()};sel=fmt(n);renderCal();break}
+    case'day':sel=t.dataset.d===sel?null:t.dataset.d;renderCal();break;
+    case'closeDD':sel=null;renderCal();break;
+    case'pprev':pOff--;renderPay();break;
+    case'pnext':pOff++;renderPay();break;
+    case'dismiss':{const u=new Date();u.setHours(u.getHours()+12);localStorage.setItem('roster_banner_dismiss',u.toISOString());$('upcomingBanner').innerHTML='';break}
+    case'tog':if(t.dataset.sch==='true')mut(()=>{const ex=ov.find(o=>o.jobId===id&&o.date===sel&&o.type==='remove');if(ex){ov=ov.filter(o=>o!==ex);delO.push(ex.id)}else ov.push(touch({id:uid(),jobId:id,date:sel,type:'remove',note:''}))});break;
+    case'addExtra':mut(()=>ov.push(touch({id:uid(),jobId:$('extraJob').value,date:sel,type:'add',note:$('extraNote').value.trim()})));break;
+    case'delOv':mut(()=>{ov=ov.filter(o=>o.id!==id);delO.push(id)});break;
+    case'addJob':mut(()=>jobs.push(touch({id:uid(),name:'New Job',colorIdx:jobs.length,rate:0,hrs:8,ot:0,ptype:'biweekly',pstart:fmt(sow(new Date())),weeks:[blank(),blank()],anchor:fmt(sow(new Date()))})));break;
+    case'delJob':if(confirm('Delete this job and its pattern?'))mut(()=>{jobs=jobs.filter(x=>x.id!==id);delJ.push(id)});break;
+    case'addWeek':mut(()=>{j.weeks.push(blank());touch(j)});break;
+    case'delWeek':if(j.weeks.length>1)mut(()=>{j.weeks.splice(+t.dataset.w,1);touch(j)});break;
+    case'dow':mut(()=>{const w=j.weeks[+t.dataset.w],d=+t.dataset.day;w[d]=!w[d];touch(j)});break;
+    case'connect':{const v=$('syncUrlInput').value.trim();if(!v){setSync('err','Paste a URL first');break}syncUrl=v;localStorage.setItem('roster_sync_url',v);$('copyLinkBtn').style.display='block';pull();autoSync();break}
+    case'syncNow':pull();break;
+    case'copy':navigator.clipboard.writeText(syncUrl).then(()=>{t.textContent='Copied!';setTimeout(()=>t.textContent='Copy link for another device',1500)},()=>alert(syncUrl));break;
+    case'export':{const u=URL.createObjectURL(new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}));const l=document.createElement('a');l.href=u;l.download=`roster-backup-${fmt(new Date())}.json`;document.body.appendChild(l);l.click();l.remove();URL.revokeObjectURL(u);break}
+    case'restore':{const f=$('restoreFileInput').files[0];if(!f){$('restoreStatus').textContent='Choose a backup file first.';break}
+      const r=new FileReader();r.onload=()=>{try{merge(JSON.parse(r.result));renderAll();push(true);$('restoreStatus').textContent='Restored.'}catch(x){$('restoreStatus').textContent='Could not read that file.'}};r.readAsText(f);break}
+  }
+});
+document.addEventListener('change',e=>{
+  const t=e.target,f=t.dataset.f;if(!f)return;
+  if(f==='hin')mut(()=>setHours(t.dataset.j,t.dataset.d,t.value));
+  else if(f==='job'){const j=jobOf(t.dataset.id),k=t.dataset.k;if(!j)return;
+    mut(()=>{j[k]=k==='name'?(t.value.trim()||'Job'):['anchor','pstart','ptype'].includes(k)?(t.value||j[k]):(Math.max(0,parseFloat(t.value))||0);if(k==='ptype'||k==='pstart')pOff=0;touch(j)})}
+  else if(f==='pjob'){pJob=t.value;pOff=0;renderPay()}
+  else if(f==='set'){const k=t.dataset.k;
+    mut(()=>{S[k]=(k==='type'||k==='start')?(t.value||S[k]):(parseFloat(t.value)||(k==='otMult'?1.5:0));S.mod=Date.now();pOff=0})}
+});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pull()});
+
+const clock=()=>{$('clockTxt').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})};
+clock();setInterval(clock,60000);
+load();sel=fmt(new Date());renderAll();
+if(syncUrl){$('syncUrlInput').value=syncUrl;$('copyLinkBtn').style.display='block';setSync('ok','Connected');pull();autoSync()}
+})();
+</script>
+</body>
+</html>
