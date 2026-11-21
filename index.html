@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Roster">
 <title>Roster</title>
 <style>
-:root{--bg:#07090F;--surface:#11151F;--surface-2:#171C29;--border:#232A3B;--border-2:#313A52;--text:#EEF0F4;--text-dim:#9099AF;--text-faint:#5C647B;--gold:#F2B04A;--gold-dim:#8A6529;--green:#3FBF74;--green-dim:#1E4A32;--red:#F0625F;--red-dim:#4A2320;--mono:ui-monospace,'SF Mono',Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+:root{--bg:#07090F;--surface:#11151F;--surface-2:#171C29;--border:#232A3B;--border-2:#313A52;--text:#EEF0F4;--text-dim:#9099AF;--text-faint:#5C647B;--gold:#F2B04A;--gold-dim:#8A6529;--green:#3FBF74;--green-dim:#1E4A32;--red:#F0625F;--red-dim:#4A2320;--blue:#5B9FE8;--blue-dim:#1E3A5C;--purple:#C77DE0;--purple-dim:#3B1F47;--mono:ui-monospace,'SF Mono',Menlo,monospace;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg)}
 body{margin:0;color:var(--text);font-family:var(--sans);overflow-x:hidden;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);min-height:100vh;background:radial-gradient(900px 500px at 85% -10%,rgba(242,176,74,.11),transparent 60%),radial-gradient(700px 500px at -10% 5%,rgba(91,159,232,.09),transparent 60%),var(--bg) fixed}
@@ -25,7 +25,7 @@ body{margin:0;color:var(--text);font-family:var(--sans);overflow-x:hidden;paddin
 .icon-btn:hover{border-color:var(--gold);color:var(--gold)}.icon-btn:active{transform:scale(.92)}
 .tabs{display:flex;gap:4px;margin-top:14px;background:var(--surface);padding:5px;border-radius:14px;border:1px solid var(--border);overflow-x:auto}
 .tabs::-webkit-scrollbar{display:none}
-.tab{flex:1;text-align:center;padding:10px 12px;font-size:13px;color:var(--text-dim);cursor:pointer;border-radius:10px;font-weight:700;white-space:nowrap;transition:.2s}
+.tab{flex:1;text-align:center;padding:10px 8px;font-size:12px;color:var(--text-dim);cursor:pointer;border-radius:10px;font-weight:700;white-space:nowrap;transition:.2s}
 .tab.active{background:linear-gradient(135deg,var(--gold),#E8873D);color:#1A1200;box-shadow:0 4px 14px rgba(232,135,61,.35)}
 .panel{display:none}.panel.visible{display:block;animation:fade .25s}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}}
@@ -40,6 +40,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 .add-btn:active{transform:scale(.98);opacity:.9}
 .add-btn.secondary{background:var(--surface-2);color:var(--text);border:1px solid var(--border-2)}
 .add-btn.secondary:hover{border-color:var(--gold)}
+.add-btn.danger{background:var(--red-dim);color:var(--red);border:1px solid var(--red-dim)}
 .hint{font-size:12px;color:var(--text-faint);margin-top:10px;line-height:1.5}
 .dow-row{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
 .dow-cell{text-align:center;padding:11px 2px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;font-size:11px;font-weight:700;color:var(--text-faint);transition:.15s}
@@ -55,6 +56,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 .week-label span[data-a]{cursor:pointer;text-transform:none;font-weight:400}
 .anchor-hint{font-size:11.5px;color:var(--text-faint);margin-top:10px}
 .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .lbl{font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:block;font-weight:600}
 .mstats{display:flex;gap:8px;margin-bottom:14px}
 .ms{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:9px 11px;font-size:11px;color:var(--text-faint)}
@@ -110,15 +112,49 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 .psub{font-size:11.5px;color:var(--text-faint);text-align:center;margin-top:2px}
 .bar{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:14px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--green));border-radius:99px;transition:width .4s}
+.bar.red i{background:linear-gradient(90deg,var(--red),#E8873D)}
 .big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .stat{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:14px}
-.stat:first-child{background:linear-gradient(160deg,rgba(63,191,116,.16),var(--surface-2))}
+.stat.green-bg{background:linear-gradient(160deg,rgba(63,191,116,.16),var(--surface-2))}
+.stat.red-bg{background:linear-gradient(160deg,rgba(240,98,95,.16),var(--surface-2))}
+.stat.blue-bg{background:linear-gradient(160deg,rgba(91,159,232,.16),var(--surface-2))}
 .stat .k{font-size:11px;color:var(--text-faint)}
 .stat .v{font-family:var(--mono);font-size:22px;font-weight:800;margin-top:4px}
-.stat .v.g{color:var(--green)}.stat .s{font-size:11px;color:var(--text-dim);margin-top:2px;font-family:var(--mono)}
+.stat .v.g{color:var(--green)}.stat .v.r{color:var(--red)}.stat .v.b{color:var(--blue)}
+.stat .s{font-size:11px;color:var(--text-dim);margin-top:2px;font-family:var(--mono)}
 .tot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;padding:9px 2px;color:var(--text-dim)}
 .tot b{color:var(--text)}
-@media(max-width:480px){.wrap{padding:0 12px 100px}.cal-head,.cal-grid{gap:4px}.cal-cell{min-height:96px;padding:5px;border-radius:11px}.chip{font-size:9px;padding:2px 4px}.hero-d{font-size:19px}.tab{padding:10px 8px;font-size:12px}.cal-cell.today .cal-daynum{width:21px;height:21px}.tg{display:none}}
+/* ---- Finance tab ---- */
+.fin-tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--surface-2);padding:4px;border-radius:11px}
+.fin-tab{flex:1;text-align:center;padding:8px 4px;font-size:12px;color:var(--text-faint);cursor:pointer;border-radius:8px;font-weight:700;transition:.2s}
+.fin-tab.active{background:var(--surface);color:var(--text);border:1px solid var(--border-2)}
+.inc-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}
+.inc-row:last-child{border-bottom:none}
+.inc-label{font-size:14px;color:var(--text)}
+.inc-sub{font-size:11px;color:var(--text-faint);margin-top:2px}
+.inc-amt{font-family:var(--mono);font-size:15px;font-weight:800;color:var(--green)}
+.custom-range{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+/* ---- Debt tab ---- */
+.debt-card{border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:12px;background:var(--surface-2)}
+.debt-card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.debt-name{font-size:16px;font-weight:800;color:var(--text)}
+.debt-type-badge{font-size:10px;padding:3px 8px;border-radius:100px;font-weight:700;background:var(--blue-dim);color:var(--blue)}
+.debt-type-badge.credit{background:var(--purple-dim);color:var(--purple)}
+.debt-type-badge.loan{background:var(--gold-dim);color:var(--gold)}
+.debt-progress{margin-top:10px}
+.debt-pct-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text-faint);margin-bottom:5px}
+.debt-bar{height:8px;border-radius:99px;background:var(--surface);overflow:hidden}
+.debt-bar i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.debt-summary{display:flex;gap:6px;margin-top:12px}
+.debt-stat{flex:1;background:var(--surface);border-radius:10px;padding:9px;font-size:11px;color:var(--text-faint)}
+.debt-stat b{display:block;font-family:var(--mono);font-size:14px;color:var(--text);margin-top:2px}
+.debt-stat b.r{color:var(--red)}
+.net-worth-banner{border-radius:16px;padding:16px;background:linear-gradient(135deg,rgba(63,191,116,.18),rgba(91,159,232,.08)),var(--surface);border:1px solid var(--border);margin-top:0}
+.nw-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);font-weight:700}
+.nw-value{font-size:28px;font-weight:800;font-family:var(--mono);margin-top:6px}
+.nw-value.pos{color:var(--green)}.nw-value.neg{color:var(--red)}
+.nw-sub{font-size:12px;color:var(--text-faint);margin-top:4px}
+@media(max-width:480px){.wrap{padding:0 12px 100px}.cal-head,.cal-grid{gap:4px}.cal-cell{min-height:96px;padding:5px;border-radius:11px}.chip{font-size:9px;padding:2px 4px}.hero-d{font-size:19px}.tab{padding:10px 6px;font-size:11px}.cal-cell.today .cal-daynum{width:21px;height:21px}.tg{display:none}}
 </style>
 </head>
 <body>
@@ -127,10 +163,13 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
 <div class="tabs">
   <div class="tab active" data-a="tab" data-p="calPanel">Calendar</div>
   <div class="tab" data-a="tab" data-p="payPanel">Pay</div>
-  <div class="tab" data-a="tab" data-p="jobsPanel">Jobs &amp; Pattern</div>
+  <div class="tab" data-a="tab" data-p="finPanel">Finance</div>
+  <div class="tab" data-a="tab" data-p="debtPanel">Debt</div>
+  <div class="tab" data-a="tab" data-p="jobsPanel">Jobs</div>
   <div class="tab" data-a="tab" data-p="syncPanel">Sync</div>
 </div>
 
+<!-- CALENDAR -->
 <div class="panel visible" id="calPanel">
   <div id="todayHero"></div>
   <div id="upcomingBanner"></div>
@@ -142,6 +181,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
   <div id="selectedDayDetail"></div>
 </div>
 
+<!-- PAY -->
 <div class="panel" id="payPanel">
   <div class="card">
     <div id="pJobSel" style="margin-bottom:14px"></div>
@@ -149,11 +189,70 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     <div id="pSummary"></div>
   </div>
   <div class="card"><div class="card-title">Hours this period</div><div id="pRows"></div><div id="pAdd"></div>
-    <div class="hint">Use − / + or type to edit any day. Edited days turn gold; ↺ resets a day to its default. Use “Log hours” to add a day that isn’t on your schedule.</div></div>
+    <div class="hint">Use − / + or type to edit any day. Edited days turn gold; ↺ resets. Use "Log hours" to add an off-schedule day.</div></div>
   <div class="card"><div class="card-title">Pay settings</div><div id="pSettings"></div></div>
   <div class="card"><div class="card-title">Pay history</div><div id="pHist"></div></div>
 </div>
 
+<!-- FINANCE -->
+<div class="panel" id="finPanel">
+  <div class="card">
+    <div class="card-title">Income Overview</div>
+    <div class="fin-tabs">
+      <div class="fin-tab active" data-a="ftab" data-v="daily">Daily</div>
+      <div class="fin-tab" data-a="ftab" data-v="weekly">Weekly</div>
+      <div class="fin-tab" data-a="ftab" data-v="biweekly">Bi-weekly</div>
+      <div class="fin-tab" data-a="ftab" data-v="monthly">Monthly</div>
+      <div class="fin-tab" data-a="ftab" data-v="custom">Custom</div>
+    </div>
+    <div id="finCustomRange" style="display:none" class="custom-range">
+      <div style="flex:1"><span class="lbl">From</span><input type="date" class="text-input" id="finFrom"></div>
+      <div style="flex:1"><span class="lbl">To</span><input type="date" class="text-input" id="finTo"></div>
+      <button class="add-btn secondary" data-a="finApply" style="width:auto;padding:12px 18px;align-self:flex-end">Go</button>
+    </div>
+    <div id="finSummary"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">By Job</div>
+    <div id="finByJob"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Year at a Glance</div>
+    <div id="finYtd"></div>
+  </div>
+</div>
+
+<!-- DEBT -->
+<div class="panel" id="debtPanel">
+  <!-- Total highlight banner -->
+  <div class="card" style="margin-top:16px;background:linear-gradient(135deg,rgba(240,98,95,.18),rgba(199,125,224,.08)),var(--surface);border-color:var(--red-dim)">
+    <div id="debtTotalBanner"></div>
+  </div>
+  <!-- Card list -->
+  <div class="card">
+    <div class="card-title">Cards &amp; Debts <span style="font-size:11px;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--gold)" data-a="addDebt">+ Add</span></div>
+    <div id="debtList"></div>
+  </div>
+  <!-- Simplified add/edit form -->
+  <div class="card" id="addDebtCard" style="display:none">
+    <div class="card-title" id="debtFormTitle">Add Card / Debt</div>
+    <div style="margin-bottom:10px">
+      <span class="lbl">Card / Debt Name</span>
+      <input type="text" class="text-input" id="debtName" placeholder="e.g. TD Visa, Car Loan">
+    </div>
+    <div class="duo" style="margin-bottom:10px">
+      <div><span class="lbl">Amount to Pay ($)</span><input type="number" inputmode="decimal" step="0.01" min="0" class="text-input" id="debtBalance" placeholder="0.00"></div>
+      <div><span class="lbl">Credit Limit ($) <span style="font-weight:400;text-transform:none">(optional)</span></span><input type="number" inputmode="decimal" step="0.01" min="0" class="text-input" id="debtLimit" placeholder="0.00"></div>
+    </div>
+    <input type="hidden" id="debtEditId">
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="add-btn" data-a="saveDebt">Save</button>
+      <button class="add-btn secondary" data-a="cancelDebt" style="width:auto;padding:13px 20px">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- JOBS -->
 <div class="panel" id="jobsPanel">
   <div class="card">
     <div class="card-title">Your jobs &amp; rotation</div>
@@ -163,6 +262,7 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
   </div>
 </div>
 
+<!-- SYNC -->
 <div class="panel" id="syncPanel">
   <div class="card">
     <div class="card-title">Cloud sync</div>
@@ -189,14 +289,15 @@ const $=id=>document.getElementById(id);
 const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const PAL=[{fg:'#3FBF74',bg:'#1E4A32'},{fg:'#5B9FE8',bg:'#1E3A5C'},{fg:'#E8A33D',bg:'#4A360F'},{fg:'#C77DE0',bg:'#3B1F47'},{fg:'#F0625F',bg:'#4A2320'},{fg:'#4DD4C4',bg:'#0F3D38'}];
+const DEBT_COLORS=['#F0625F','#C77DE0','#E8A33D','#5B9FE8','#4DD4C4','#3FBF74'];
 const pad=n=>String(n).padStart(2,'0');
-const fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; // local date (not UTC)
+const fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const P=s=>new Date(s+'T00:00:00');
 const addD=(d,n)=>{const r=new Date(d);r.setDate(r.getDate()+n);return r};
 const sow=d=>{const r=new Date(d);r.setHours(0,0,0,0);r.setDate(r.getDate()-r.getDay());return r};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML};
-const money=n=>'$'+n.toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
+const money=n=>'$'+Math.abs(n).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
 const nh=n=>(Math.round(n*100)/100).toString();
 const ls=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
 const short=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
@@ -204,21 +305,21 @@ const col=j=>PAL[j.colorIdx%PAL.length];
 const blank=()=>[0,0,0,0,0,0,0].map(()=>false);
 
 let jobs=[],delJ=[],ov=[],delO=[],H={},PH={},S={type:'biweekly',start:'',tax:0,otMult:1.5,mod:0};
+let debts=[];
 let syncUrl='',timer=null,pushT=null,sel=null,pOff=0,pJob=null;
+let finView='daily',finFrom='',finTo='';
 const n0=new Date();let cal={y:n0.getFullYear(),m:n0.getMonth()};
 
 function load(){
   jobs=ls('roster_jobs',[]);delJ=ls('roster_deleted_jobs',[]);ov=ls('roster_overrides',[]);delO=ls('roster_deleted_overrides',[]);
   H=ls('roster_hours',{});PH=ls('roster_paid',{});pJob=localStorage.getItem('roster_pjob');Object.assign(S,ls('roster_settings',{}));syncUrl=localStorage.getItem('roster_sync_url')||'';
+  debts=ls('roster_debts',[]);
   const sun=fmt(sow(new Date()));
   if(!jobs.length){
     jobs=[{id:uid(),name:'Craigwiel Gardens',colorIdx:0,weeks:[[1,0,0,1,1,0,0].map(Boolean),[0,1,1,0,0,1,1].map(Boolean)],anchor:sun},
           {id:uid(),name:'Other Job',colorIdx:1,weeks:[[1,0,1,0,1,0,1].map(Boolean),[0,0,0,0,1,0,0].map(Boolean),[1,0,1,0,0,0,1].map(Boolean),[0,0,1,0,0,1,0].map(Boolean)],anchor:sun}];
   }
-  jobs.forEach(j=>{ // migrate old formats + new pay fields
-    if(!j.weeks&&j.weekA){j.weeks=[j.weekA,j.weekB];delete j.weekA;delete j.weekB}
-    norm(j);
-  });
+  jobs.forEach(j=>{if(!j.weeks&&j.weekA){j.weeks=[j.weekA,j.weekB];delete j.weekA;delete j.weekB}norm(j)});
   if(!S.start)S.start=sun;
   save(true);
 }
@@ -226,12 +327,13 @@ function save(local){
   localStorage.setItem('roster_jobs',JSON.stringify(jobs));localStorage.setItem('roster_deleted_jobs',JSON.stringify(delJ));
   localStorage.setItem('roster_overrides',JSON.stringify(ov));localStorage.setItem('roster_deleted_overrides',JSON.stringify(delO));
   localStorage.setItem('roster_hours',JSON.stringify(H));localStorage.setItem('roster_paid',JSON.stringify(PH));localStorage.setItem('roster_settings',JSON.stringify(S));
+  localStorage.setItem('roster_debts',JSON.stringify(debts));
   if(!local&&syncUrl){clearTimeout(pushT);pushT=setTimeout(()=>push(true),800)}
 }
 const norm=j=>{j.rate=+j.rate||0;j.hrs=j.hrs==null?8:+j.hrs;j.ot=+j.ot||0;j.ptype=j.ptype||S.type||'biweekly';j.pstart=j.pstart||S.start||fmt(sow(new Date()))};
 const touch=o=>{o.mod=Date.now();return o};
 
-/* ---------- sync (newest edit wins per item) ---------- */
+/* sync */
 function setSync(state,text){[$('syncDot'),$('syncDot2')].forEach(d=>d.className='sync-dot'+(state?' '+state:''));if(text)$('syncStatusText').textContent=text}
 function mergeList(local,remote,del){const m={};local.forEach(x=>m[x.id]=x);remote.forEach(x=>{const c=m[x.id];if(!c||(x.mod||0)>(c.mod||0))m[x.id]=x});return Object.values(m).filter(x=>!del.includes(x.id))}
 function merge(r){
@@ -242,71 +344,164 @@ function merge(r){
   if(r.hours&&typeof r.hours==='object')Object.entries(r.hours).forEach(([k,v])=>{if(!H[k]||(v.mod||0)>(H[k].mod||0))H[k]=v});
   if(r.paid&&typeof r.paid==='object')Object.entries(r.paid).forEach(([k,v])=>{if(!PH[k]||(v.mod||0)>(PH[k].mod||0))PH[k]=v});
   if(r.settings&&(r.settings.mod||0)>(S.mod||0))S=Object.assign(S,r.settings);
-  jobs.forEach(norm);
-  save(true);
+  if(r.debts)debts=r.debts;
+  jobs.forEach(norm);save(true);
 }
-const payload=()=>({jobs,deletedJobIds:delJ,overrides:ov,deletedOverrideIds:delO,hours:H,paid:PH,settings:S,updatedAt:new Date().toISOString()});
+const payload=()=>({jobs,deletedJobIds:delJ,overrides:ov,deletedOverrideIds:delO,hours:H,paid:PH,settings:S,debts,updatedAt:new Date().toISOString()});
 const stamp=()=>{$('lastSyncHint').textContent='Last synced '+new Date().toLocaleTimeString('en-US')};
-async function pull(){
-  if(!syncUrl)return;setSync('busy','Syncing…');
-  try{const r=await fetch(syncUrl+(syncUrl.includes('?')?'&':'?')+'_='+Date.now());merge(await r.json());await push(true);setSync('ok','Synced');stamp();const ae=document.activeElement;if(!ae||!/INPUT|SELECT/.test(ae.tagName))renderAll()}
-  catch(e){setSync('err','Sync failed — check the URL or your connection')}
-}
-async function push(silent){
-  if(!syncUrl)return;if(!silent)setSync('busy','Syncing…');
-  try{await fetch(syncUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload())});if(!silent){setSync('ok','Synced');stamp()}}
-  catch(e){if(!silent)setSync('err','Sync failed — check the URL or your connection')}
-}
+async function pull(){if(!syncUrl)return;setSync('busy','Syncing…');try{const r=await fetch(syncUrl+(syncUrl.includes('?')?'&':'?')+'_='+Date.now());merge(await r.json());await push(true);setSync('ok','Synced');stamp();const ae=document.activeElement;if(!ae||!/INPUT|SELECT/.test(ae.tagName))renderAll()}catch(e){setSync('err','Sync failed')}}
+async function push(silent){if(!syncUrl)return;if(!silent)setSync('busy','Syncing…');try{await fetch(syncUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload())});if(!silent){setSync('ok','Synced');stamp()}}catch(e){if(!silent)setSync('err','Sync failed')}}
 function autoSync(){clearInterval(timer);if(syncUrl)timer=setInterval(pull,20000)}
 
-/* ---------- schedule ---------- */
-function isSch(j,ds){
-  const diff=Math.round((sow(P(ds))-sow(P(j.anchor)))/(7*864e5));const n=j.weeks.length;
-  return !!j.weeks[((diff%n)+n)%n][P(ds).getDay()];
-}
-function shifts(ds){
-  const r=[];
-  jobs.forEach(j=>{
-    const rm=ov.some(o=>o.jobId===j.id&&o.date===ds&&o.type==='remove');
-    if(isSch(j,ds)&&!rm)r.push({job:j,kind:'regular'});
-    ov.forEach(o=>{if(o.jobId===j.id&&o.date===ds&&o.type==='add')r.push({job:j,kind:'extra',note:o.note})});
-  });
-  return r;
-}
+/* schedule */
+function isSch(j,ds){const diff=Math.round((sow(P(ds))-sow(P(j.anchor)))/(7*864e5));const n=j.weeks.length;return !!j.weeks[((diff%n)+n)%n][P(ds).getDay()]}
+function shifts(ds){const r=[];jobs.forEach(j=>{const rm=ov.some(o=>o.jobId===j.id&&o.date===ds&&o.type==='remove');if(isSch(j,ds)&&!rm)r.push({job:j,kind:'regular'});ov.forEach(o=>{if(o.jobId===j.id&&o.date===ds&&o.type==='add')r.push({job:j,kind:'extra',note:o.note})})});return r}
 const logged=(j,ds)=>{const h=H[j.id+'|'+ds];return !!h&&h.hours!=null};
 const hrs=(j,ds)=>logged(j,ds)?H[j.id+'|'+ds].hours:shifts(ds).filter(s=>s.job.id===j.id).length*j.hrs;
-function setHours(jid,ds,v){
-  const k=jid+'|'+ds,x=parseFloat(v);
-  H[k]=touch({id:k,jobId:jid,date:ds,hours:(v===''||isNaN(x)||x<0)?null:x});
-}
+function setHours(jid,ds,v){const k=jid+'|'+ds,x=parseFloat(v);H[k]=touch({id:k,jobId:jid,date:ds,hours:(v===''||isNaN(x)||x<0)?null:x})}
 
-/* ---------- pay ---------- */
+/* pay periods */
 function period(off,j){
   const t=new Date();t.setHours(0,0,0,0);let s,e;
-  if(j.ptype==='weekly'||j.ptype==='biweekly'){
-    const L=j.ptype==='weekly'?7:14,i=Math.floor(Math.round((t-P(j.pstart))/864e5)/L)+off;
-    s=addD(P(j.pstart),i*L);e=addD(s,L-1);
-  }else if(j.ptype==='semi'){
-    const k=t.getFullYear()*24+t.getMonth()*2+(t.getDate()>15?1:0)+off,y=Math.floor(k/24),m=Math.floor(k%24/2);
-    s=new Date(y,m,k%2?16:1);e=k%2?new Date(y,m+1,0):new Date(y,m,15);
-  }else{
-    const k=t.getFullYear()*12+t.getMonth()+off;s=new Date(Math.floor(k/12),k%12,1);e=new Date(Math.floor(k/12),k%12+1,0);
-  }
-  return{s,e};
+  if(j.ptype==='weekly'||j.ptype==='biweekly'){const L=j.ptype==='weekly'?7:14,i=Math.floor(Math.round((t-P(j.pstart))/864e5)/L)+off;s=addD(P(j.pstart),i*L);e=addD(s,L-1)}
+  else if(j.ptype==='semi'){const k=t.getFullYear()*24+t.getMonth()*2+(t.getDate()>15?1:0)+off,y=Math.floor(k/24),m=Math.floor(k%24/2);s=new Date(y,m,k%2?16:1);e=k%2?new Date(y,m+1,0):new Date(y,m,15)}
+  else{const k=t.getFullYear()*12+t.getMonth()+off;s=new Date(Math.floor(k/12),k%12,1);e=new Date(Math.floor(k/12),k%12+1,0)}
+  return{s,e}
 }
-function calc(list,s,e,upto){ // overtime is weekly (Sun–Sat) per job
+function calc(list,s,e,upto){
   return list.map(j=>{
     const wk={};let days=0;
-    for(let d=new Date(s);d<=e;d=addD(d,1)){
-      const ds=fmt(d);if(upto&&ds>upto)break;
-      const h=hrs(j,ds);if(h>0){days++;const k=fmt(sow(d));wk[k]=(wk[k]||0)+h}
-    }
+    for(let d=new Date(s);d<=e;d=addD(d,1)){const ds=fmt(d);if(upto&&ds>upto)break;const h=hrs(j,ds);if(h>0){days++;const k=fmt(sow(d));wk[k]=(wk[k]||0)+h}}
     let tot=0,ot=0;Object.values(wk).forEach(w=>{tot+=w;if(j.ot>0&&w>j.ot)ot+=w-j.ot});
-    return{job:j,days,hours:tot,ot,pay:(tot-ot)*j.rate+ot*j.rate*S.otMult};
-  });
+    return{job:j,days,hours:tot,ot,pay:(tot-ot)*j.rate+ot*j.rate*S.otMult}
+  })
 }
-const sum=(a,k)=>a.reduce((t,x)=>t+x[k],0);
 
+/* income for any date range */
+function incomeRange(s,e){
+  const r=calc(jobs,s,e);
+  return{total:r.reduce((t,x)=>t+x.pay,0),hours:r.reduce((t,x)=>t+x.hours,0),byJob:r}
+}
+
+/* ===================== FINANCE PANEL ===================== */
+function getFinRange(){
+  const td=new Date();td.setHours(0,0,0,0);
+  if(finView==='daily'){return{s:td,e:td,label:'Today',sub:td.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}}
+  if(finView==='weekly'){const s=sow(td),e=addD(s,6);return{s,e,label:'This Week',sub:`${short(s)} – ${short(e)}`}}
+  if(finView==='biweekly'){
+    const j0=jobs[0]||{pstart:fmt(sow(td)),ptype:'biweekly'};
+    if(j0.ptype==='biweekly'||j0.ptype==='weekly'){
+      const L=14,i=Math.floor(Math.round((td-P(j0.pstart))/864e5)/L);
+      const s=addD(P(j0.pstart),i*L),e=addD(s,L-1);return{s,e,label:'This Pay Period',sub:`${short(s)} – ${short(e)}`}
+    }
+    const s=sow(td),e=addD(s,13);return{s,e,label:'Last 2 Weeks',sub:`${short(s)} – ${short(e)}`}
+  }
+  if(finView==='monthly'){const s=new Date(td.getFullYear(),td.getMonth(),1),e=new Date(td.getFullYear(),td.getMonth()+1,0);return{s,e,label:MN[td.getMonth()]+' '+td.getFullYear(),sub:`${short(s)} – ${short(e)}`}}
+  if(finView==='custom'&&finFrom&&finTo){const s=P(finFrom),e=P(finTo);return{s,e,label:'Custom Range',sub:`${short(s)} – ${short(e)}`}}
+  return{s:td,e:td,label:'Today',sub:''}
+}
+
+function renderFinance(){
+  const range=getFinRange();
+  const {total,hours,byJob}=incomeRange(range.s,range.e);
+  const tax=(+S.tax||0)/100;
+  const take=total*(1-tax);
+  const days=Math.max(1,Math.round((range.e-range.s)/864e5)+1);
+  const daily=total/days;
+
+  $('finSummary').innerHTML=`
+    <div style="margin-bottom:14px">
+      <div style="font-size:18px;font-weight:800">${range.label}</div>
+      <div style="font-size:12px;color:var(--text-faint);margin-top:2px">${range.sub}</div>
+    </div>
+    <div class="big" style="margin-top:0">
+      <div class="stat green-bg"><div class="k">Gross Income</div><div class="v g">${money(total)}</div><div class="s">${nh(hours)} hrs</div></div>
+      <div class="stat"><div class="k">Est. Take-Home</div><div class="v">${money(take)}</div><div class="s">${tax>0?S.tax+'% tax est.':'No tax set'}</div></div>
+    </div>
+    ${days>1?`<div class="big" style="margin-top:10px">
+      <div class="stat"><div class="k">Daily Average</div><div class="v b">${money(daily)}</div><div class="s">${days} days</div></div>
+      <div class="stat"><div class="k">Hourly Average</div><div class="v">${hours>0?money(total/hours):'—'}</div><div class="s">effective</div></div>
+    </div>`:''}`;
+
+  $('finByJob').innerHTML=byJob.length?byJob.map((x,i)=>{const c=col(x.job);return `
+    <div class="inc-row">
+      <div><div class="inc-label" style="display:flex;align-items:center;gap:7px"><span class="job-color-dot" style="background:${c.fg};margin-right:0"></span>${esc(x.job.name)}</div>
+        <div class="inc-sub">${nh(x.hours)} hrs @ ${money(x.job.rate)}/hr${x.ot>0?' · '+nh(x.ot)+' OT':''}</div></div>
+      <div class="inc-amt">${money(x.pay)}</div>
+    </div>`}).join(''):'<div class="hint" style="margin-top:0">No hours in this period.</div>';
+
+  // YTD by month
+  const yr=new Date().getFullYear();
+  const months=Array.from({length:12},(_,m)=>{
+    const s=new Date(yr,m,1),e=new Date(yr,m+1,0),now=new Date();
+    if(s>now)return{m,label:MN[m].slice(0,3),total:null};
+    const {total}=incomeRange(s,e);return{m,label:MN[m].slice(0,3),total}
+  });
+  const ytdTotal=months.filter(x=>x.total!=null).reduce((t,x)=>t+x.total,0);
+  const maxM=Math.max(...months.filter(x=>x.total!=null).map(x=>x.total),1);
+  $('finYtd').innerHTML=`<div class="tot" style="margin-bottom:12px"><span>YTD ${yr}</span><b>${money(ytdTotal)}</b></div>`+
+    months.map(x=>`<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px"><span style="color:var(--text-dim)">${x.label}</span><span style="font-family:var(--mono);color:${x.total==null?'var(--text-faint)':'var(--text)'}">${x.total==null?'—':money(x.total)}</span></div>
+      ${x.total!=null?`<div class="bar" style="margin-top:0;height:4px"><i style="width:${Math.round(x.total/maxM*100)}%"></i></div>`:''}
+    </div>`).join('');
+}
+
+/* ===================== DEBT PANEL ===================== */
+function renderDebt(){
+  const totalBal=debts.reduce((t,d)=>t+(+d.balance||0),0);
+  const totalLim=debts.reduce((t,d)=>t+(+d.limit||0),0);
+  const totalAvail=Math.max(0,totalLim-totalBal);
+
+  // Highlighted total banner
+  $('debtTotalBanner').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--red);font-weight:700">Total Credit Owed</div>
+        <div style="font-size:36px;font-weight:800;font-family:var(--mono);color:var(--red);margin-top:4px;line-height:1">${money(totalBal)}</div>
+        ${totalLim>0?`<div style="font-size:12px;color:var(--text-faint);margin-top:6px">Available: <span style="color:var(--green);font-family:var(--mono)">${money(totalAvail)}</span> of ${money(totalLim)}</div>`:''}
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--text-dim);font-weight:700">Accounts</div>
+        <div style="font-size:28px;font-weight:800;font-family:var(--mono);color:var(--text);margin-top:4px">${debts.length}</div>
+      </div>
+    </div>
+    ${totalLim>0&&debts.length?`<div style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-faint);margin-bottom:5px"><span>Overall utilization</span><span style="font-weight:700">${Math.round(totalBal/totalLim*100)}%</span></div>
+      <div class="debt-bar"><i style="width:${Math.min(100,Math.round(totalBal/totalLim*100))}%;background:${totalBal/totalLim>0.75?'var(--red)':totalBal/totalLim>0.4?'var(--gold)':'var(--green)'}"></i></div>
+    </div>`:''}`;
+
+  // Card list
+  $('debtList').innerHTML=!debts.length
+    ?'<div class="hint" style="margin-top:0">No cards yet. Tap "+ Add" to track your debts.</div>'
+    :debts.map((d,i)=>{
+      const bal=+d.balance||0,lim=+d.limit||0;
+      const used=lim>0?Math.min(100,Math.round(bal/lim*100)):null;
+      const avail=lim>0?Math.max(0,lim-bal):null;
+      const color=DEBT_COLORS[i%DEBT_COLORS.length];
+      return `<div class="debt-card" style="border-left:3px solid ${color}">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:16px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(d.name)}</div>
+            ${avail!=null?`<div style="font-size:11px;color:var(--text-faint);margin-top:2px">Available: <span style="color:var(--green);font-family:var(--mono)">${money(avail)}</span></div>`:''}
+          </div>
+          <div style="display:flex;gap:12px;align-items:center;flex-shrink:0;margin-left:12px">
+            <span style="font-size:13px;color:var(--gold);cursor:pointer;font-weight:700" data-a="editDebt" data-id="${d.id}">✏ Edit</span>
+            <span style="font-size:13px;color:var(--red);cursor:pointer" data-a="delDebt" data-id="${d.id}">✕</span>
+          </div>
+        </div>
+        <div class="debt-summary" style="margin-top:12px">
+          <div class="debt-stat"><div>Amount Owed</div><b style="color:var(--red)">${money(bal)}</b></div>
+          ${lim>0?`<div class="debt-stat"><div>Limit</div><b>${money(lim)}</b></div>`:''}
+          ${used!=null?`<div class="debt-stat"><div>Used</div><b style="color:${used>75?'var(--red)':used>40?'var(--gold)':'var(--green)'}">${used}%</b></div>`:''}
+        </div>
+        ${used!=null?`<div style="margin-top:10px">
+          <div class="debt-bar"><i style="width:${used}%;background:${used>75?'var(--red)':used>40?'var(--gold)':'var(--green)'}"></i></div>
+        </div>`:''}
+      </div>`;
+    }).join('');
+}
+
+/* ===================== PAY PANEL ===================== */
 function renderPay(){
   if(!jobs.length){['pJobSel','pAdd','pRows','pSettings','pSummary'].forEach(i=>$(i).innerHTML='');$('pLabel').textContent='';$('pSub').textContent='';$('pSummary').innerHTML='<div class="hint">Add a job first.</div>';return}
   const j=jobOf(pJob)||jobs[0];pJob=j.id;
@@ -319,7 +514,7 @@ function renderPay(){
   $('pSub').textContent=td>=sf&&td<=ef?`Current pay period · ${pct}% elapsed`:(td>ef?'Past pay period':'Upcoming pay period');
   $('pSummary').innerHTML=`<div class="bar"><i style="width:${pct}%"></i></div>
     <div class="big">
-      <div class="stat"><div class="k">Earned so far</div><div class="v g">${money(d.pay)}</div><div class="s">${nh(d.hours)} hrs</div></div>
+      <div class="stat green-bg"><div class="k">Earned so far</div><div class="v g">${money(d.pay)}</div><div class="s">${nh(d.hours)} hrs</div></div>
       <div class="stat"><div class="k">Full period</div><div class="v">${money(f.pay)}</div><div class="s">${nh(f.hours)} hrs</div></div>
     </div>
     <div class="tot"><span>${nh(f.hours)} hrs${f.ot>0?` (${nh(f.ot)} OT)`:''} × ${money(j.rate)}/hr</span><b>${money(f.pay)}</b></div>
@@ -339,17 +534,16 @@ function renderPay(){
   $('pAdd').innerHTML=`<div class="quick-add"><span class="lbl">Log hours for any day</span><div class="field-row"><input type="date" class="text-input" id="addDate" min="${sf}" max="${ef}" value="${dv}"><input type="number" inputmode="decimal" step="0.25" min="0" class="text-input" id="addH" placeholder="Hours" style="max-width:110px"></div><button class="add-btn secondary" data-a="addHrs" data-j="${j.id}">Log hours</button></div>`;
   const o=(v,l)=>`<option value="${v}" ${j.ptype===v?'selected':''}>${l}</option>`,wk=j.ptype==='weekly'||j.ptype==='biweekly';
   $('pSettings').innerHTML=`
-    <div class="hint" style="margin:0 0 10px">Pay period for <b style="color:var(--text)">${esc(j.name)}</b> — each job has its own.</div>
-    <div class="field-row"><div style="flex:1"><span class="lbl">Pay frequency</span><select data-f="job" data-k="ptype" data-id="${j.id}" style="width:100%">${o('weekly','Weekly')}${o('biweekly','Every 2 weeks')}${o('semi','Twice a month (1st & 16th)')}${o('monthly','Monthly')}</select></div></div>
+    <div class="hint" style="margin:0 0 10px">Pay period for <b style="color:var(--text)">${esc(j.name)}</b></div>
+    <div class="field-row"><div style="flex:1"><span class="lbl">Pay frequency</span><select data-f="job" data-k="ptype" data-id="${j.id}" style="width:100%">${o('weekly','Weekly')}${o('biweekly','Every 2 weeks')}${o('semi','Twice a month')}${o('monthly','Monthly')}</select></div></div>
     ${wk?`<div class="field-row"><div style="flex:1"><span class="lbl">A pay period started on</span><input type="date" class="text-input" style="width:100%" data-f="job" data-k="pstart" data-id="${j.id}" value="${j.pstart}"></div></div>`:''}
-    <div class="trio" style="grid-template-columns:1fr 1fr"><div><span class="lbl">Tax withheld % (all jobs)</span><input type="number" inputmode="decimal" min="0" max="100" class="text-input" style="width:100%" data-f="set" data-k="tax" value="${S.tax||0}"></div>
-    <div><span class="lbl">Overtime multiplier</span><input type="number" inputmode="decimal" step="0.05" min="1" class="text-input" style="width:100%" data-f="set" data-k="otMult" value="${S.otMult}"></div></div>
-    <div class="hint">Overtime applies per Sun–Sat week once you set "OT after" hours on the job (0 = none).</div>`;
+    <div class="trio" style="grid-template-columns:1fr 1fr"><div><span class="lbl">Tax withheld %</span><input type="number" inputmode="decimal" min="0" max="100" class="text-input" style="width:100%" data-f="set" data-k="tax" value="${S.tax||0}"></div>
+    <div><span class="lbl">OT multiplier</span><input type="number" inputmode="decimal" step="0.05" min="1" class="text-input" style="width:100%" data-f="set" data-k="otMult" value="${S.otMult}"></div></div>`;
   const hist=Object.values(PH).filter(p=>!p.del).sort((x,y)=>y.end.localeCompare(x.end)),yr=String(new Date().getFullYear());
-  $('pHist').innerHTML=hist.length?`<div class="tot"><span>Year to date (gross)</span><b>${money(hist.filter(p=>p.end.startsWith(yr)).reduce((t,p)=>t+p.gross,0))}</b></div>`+hist.map(p=>{const jj=jobOf(p.jobId),cc=jj?col(jj):PAL[0];return `<div class="row"><div class="row-l"><span class="job-color-dot" style="background:${cc.fg}"></span><span>${esc(p.name)}<span style="display:block;font-size:11px;color:var(--text-faint)">${short(P(p.start))} – ${short(P(p.end))} · ${nh(p.hours)} hrs @ ${money(p.rate)}</span></span></div><div style="text-align:right;font-family:var(--mono);font-size:13px"><b>${money(p.gross)}</b><span class="job-del" data-a="delPaid" data-id="${p.id}">×</span></div></div>`}).join(''):'<div class="hint" style="margin-top:0">Nothing saved yet. Tap “Save period to history” on any pay period to keep a permanent record of hours and pay.</div>';
+  $('pHist').innerHTML=hist.length?`<div class="tot"><span>Year to date (gross)</span><b>${money(hist.filter(p=>p.end.startsWith(yr)).reduce((t,p)=>t+p.gross,0))}</b></div>`+hist.map(p=>{const jj=jobOf(p.jobId),cc=jj?col(jj):PAL[0];return `<div class="row"><div class="row-l"><span class="job-color-dot" style="background:${cc.fg}"></span><span>${esc(p.name)}<span style="display:block;font-size:11px;color:var(--text-faint)">${short(P(p.start))} – ${short(P(p.end))} · ${nh(p.hours)} hrs @ ${money(p.rate)}</span></span></div><div style="text-align:right;font-family:var(--mono);font-size:13px"><b>${money(p.gross)}</b><span class="job-del" data-a="delPaid" data-id="${p.id}">×</span></div></div>`}).join(''):'<div class="hint" style="margin-top:0">Nothing saved yet.</div>';
 }
 
-/* ---------- jobs ---------- */
+/* jobs */
 function renderJobs(){
   const el=$('jobsList');
   if(!jobs.length){el.innerHTML='<div class="hint">No jobs yet — add one below.</div>';return}
@@ -370,10 +564,10 @@ function renderJobs(){
     </div>`}).join('');
 }
 
-/* ---------- calendar ---------- */
+/* calendar */
 function renderHero(){
   const td=fmt(new Date()),sh=shifts(td);
-  $('todayHero').innerHTML=`<div class="hero"><div class="hero-k">TODAY</div><div class="hero-d">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>${sh.length?`<div class="hero-s">${sh.map(x=>{const c=col(x.job);return `<span class="pill" style="--cb:${c.bg};--cf:${c.fg}">${esc(x.job.name)}${x.kind==='extra'?' +':''} · ${nh(hrs(x.job,td)/sh.filter(y=>y.job.id===x.job.id).length)}h</span>`}).join('')}</div>`:'<div class="hero-off">No shifts — enjoy your day off 🎉</div>'}</div>`;
+  $('todayHero').innerHTML=`<div class="hero"><div class="hero-k">TODAY</div><div class="hero-d">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>${sh.length?`<div class="hero-s">${sh.map(x=>{const c=col(x.job);return `<span class="pill" style="--cb:${c.bg};--cf:${c.fg}">${esc(x.job.name)}${x.kind==='extra'?' +':''} · ${nh(hrs(x.job,td)/Math.max(1,sh.filter(y=>y.job.id===x.job.id).length))}h</span>`}).join('')}</div>`:'<div class="hero-off">No shifts — enjoy your day off 🎉</div>'}</div>`;
 }
 function renderCal(){
   $('calMonthLabel').textContent=MN[cal.m]+' '+cal.y;
@@ -383,8 +577,7 @@ function renderCal(){
   for(let d=1;d<=dim;d++){
     const ds=`${cal.y}-${pad(cal.m+1)}-${pad(d)}`,sh=shifts(ds),tot=jobs.reduce((t,j)=>t+hrs(j,ds),0);
     if(sh.length){nd++;ns+=sh.length}mh+=tot;
-    h+=`<div class="cal-cell${ds===tk?' today':''}${ds===sel?' selected':''}" data-a="day" data-d="${ds}"><div class="cal-top"><div class="cal-daynum">${d}</div>${ds===tk?'<span class="tg">TODAY</span>':''}</div><div class="chips">${
-      sh.map(x=>{const c=col(x.job);return `<div class="chip${x.kind==='extra'?' extra':''}" style="--cb:${c.bg};--cf:${c.fg}">${esc(x.job.name.slice(0,12))}${x.kind==='extra'?' +':''}</div>`}).join('')}</div><div class="cal-hrs">${tot?nh(tot)+'h':''}</div></div>`;
+    h+=`<div class="cal-cell${ds===tk?' today':''}${ds===sel?' selected':''}" data-a="day" data-d="${ds}"><div class="cal-top"><div class="cal-daynum">${d}</div>${ds===tk?'<span class="tg">TODAY</span>':''}</div><div class="chips">${sh.map(x=>{const c=col(x.job);return `<div class="chip${x.kind==='extra'?' extra':''}" style="--cb:${c.bg};--cf:${c.fg}">${esc(x.job.name.slice(0,12))}${x.kind==='extra'?' +':''}</div>`}).join('')}</div><div class="cal-hrs">${tot?nh(tot)+'h':''}</div></div>`;
   }
   $('calGrid').innerHTML=h;
   $('calStats').innerHTML=`<div class="ms">Shifts<b>${ns}</b></div><div class="ms">Days working<b>${nd}</b></div><div class="ms">Hours<b>${nh(mh)}</b></div>`;
@@ -394,7 +587,7 @@ function renderDay(){
   const el=$('selectedDayDetail');if(!sel){el.innerHTML='';return}
   const label=P(sel).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
   const head=`<div class="dd-title"><span>${label}</span><span class="x" data-a="closeDD">×</span></div>`;
-  if(!jobs.length){el.innerHTML=`<div class="dd">${head}<div class="hint">Add a job in the Jobs &amp; Pattern tab first.</div></div>`;return}
+  if(!jobs.length){el.innerHTML=`<div class="dd">${head}<div class="hint">Add a job first.</div></div>`;return}
   el.innerHTML=`<div class="dd">${head}
     ${jobs.map(j=>{
       const rm=ov.find(o=>o.jobId===j.id&&o.date===sel&&o.type==='remove'),sch=isSch(j,sel),work=sch&&!rm,c=col(j);
@@ -403,9 +596,9 @@ function renderDay(){
         <div style="display:flex;align-items:center;gap:8px">
           ${n?`<input type="number" inputmode="decimal" step="0.25" min="0" class="hin ${logged(j,sel)?'logged':''}" data-f="hin" data-j="${j.id}" data-d="${sel}" value="${nh(hrs(j,sel))}" title="Hours worked"><span style="font-size:11px;color:var(--text-faint)">hrs</span>`:''}
           <span class="st ${work?'working':'off'}" data-a="tog" data-id="${j.id}" data-sch="${sch}">${work?'Working':'Off'}</span></div></div>`}).join('')}
-    <div class="quick-add"><span class="lbl">Add extra shift (pickup / OT)</span>
+    <div class="quick-add"><span class="lbl">Add extra shift</span>
       <div class="field-row"><select id="extraJob">${jobs.map(j=>`<option value="${j.id}">${esc(j.name)}</option>`).join('')}</select></div>
-      <div class="field-row"><input type="text" class="text-input" id="extraNote" placeholder="Note (optional, e.g. covering for Sam)"></div>
+      <div class="field-row"><input type="text" class="text-input" id="extraNote" placeholder="Note (optional)"></div>
       <button class="add-btn secondary" data-a="addExtra">+ Add extra shift</button></div>
     ${ov.filter(o=>o.date===sel&&o.type==='add').map(o=>{const j=jobs.find(x=>x.id===o.jobId);return `<div class="row"><div class="row-l">Extra: ${esc(j?j.name:'?')}${o.note?' — '+esc(o.note):''}</div><span class="job-del" data-a="delOv" data-id="${o.id}">×</span></div>`}).join('')}
   </div>`;
@@ -417,28 +610,49 @@ function renderBanner(){
   for(let i=0;i<3;i++){const d=addD(new Date(),i);shifts(fmt(d)).forEach(s=>up.push(`${s.job.name} (${i===0?'today':i===1?'tomorrow':d.toLocaleDateString('en-US',{weekday:'short'})})`))}
   el.innerHTML=up.length?`<div class="banner"><span>📅 Upcoming: ${esc(up.join(', '))}</span><span class="x" data-a="dismiss">×</span></div>`:'';
 }
-function renderAll(){renderCal();renderPay();renderJobs()}
+function renderAll(){renderCal();renderPay();renderFinance();renderDebt();renderJobs()}
 
-/* ---------- events ---------- */
+/* ===================== EVENTS ===================== */
 const mut=fn=>{fn();save();renderAll()};
 const jobOf=id=>jobs.find(j=>j.id===id);
+const debtOf=id=>debts.find(d=>d.id===id);
+
+function showDebtForm(d){
+  $('addDebtCard').style.display='block';
+  $('debtFormTitle').textContent=d?'Edit Card / Debt':'Add Card / Debt';
+  $('debtName').value=d?d.name:'';
+  $('debtBalance').value=d?d.balance:'';
+  $('debtLimit').value=d?(d.limit||''):'';
+  $('debtEditId').value=d?d.id:'';
+  setTimeout(()=>$('addDebtCard').scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-a]');if(!t)return;
   const a=t.dataset.a,id=t.dataset.id,j=jobOf(id);
   switch(a){
-    case'tab':document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('visible',p.id===t.dataset.p));renderAll();break;
+    case'tab':
+      document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===t));
+      document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('visible',p.id===t.dataset.p));
+      renderAll();break;
+    case'ftab':
+      document.querySelectorAll('[data-a="ftab"]').forEach(x=>x.classList.toggle('active',x===t));
+      finView=t.dataset.v;
+      $('finCustomRange').style.display=finView==='custom'?'flex':'none';
+      if(finView!=='custom')renderFinance();break;
+    case'finApply':finFrom=$('finFrom').value;finTo=$('finTo').value;renderFinance();break;
     case'prev':cal.m--;if(cal.m<0){cal.m=11;cal.y--}renderCal();break;
     case'next':cal.m++;if(cal.m>11){cal.m=0;cal.y++}renderCal();break;
     case'today':{const n=new Date();cal={y:n.getFullYear(),m:n.getMonth()};sel=fmt(n);renderCal();break}
     case'day':sel=t.dataset.d===sel?null:t.dataset.d;renderCal();if(sel)setTimeout(()=>$('selectedDayDetail').scrollIntoView({behavior:'smooth',block:'nearest'}),60);break;
     case'closeDD':sel=null;renderCal();break;
     case'pprev':pOff--;renderPay();break;
+    case'pnext':pOff++;renderPay();break;
     case'step':mut(()=>setHours(t.dataset.j,t.dataset.d,Math.max(0,hrs(jobOf(t.dataset.j),t.dataset.d)+parseFloat(t.dataset.v))));break;
     case'rstH':mut(()=>setHours(t.dataset.j,t.dataset.d,''));break;
     case'addHrs':{const dt=$('addDate').value,v=$('addH').value;if(!dt||v==='')break;mut(()=>setHours(t.dataset.j,dt,v));break}
     case'markPaid':mut(()=>{const jb=jobOf(pJob),{s,e}=period(pOff,jb),[f]=calc([jb],s,e),k=jb.id+'|'+fmt(s);PH[k]=touch({id:k,jobId:jb.id,name:jb.name,start:fmt(s),end:fmt(e),hours:f.hours,ot:f.ot,rate:jb.rate,mult:S.otMult,gross:f.pay,net:f.pay*(1-(+S.tax||0)/100),paidOn:fmt(new Date())})});break;
     case'delPaid':if(confirm('Remove this saved period?'))mut(()=>{PH[id]=touch({id,del:true})});break;
-    case'pnext':pOff++;renderPay();break;
     case'dismiss':{const u=new Date();u.setHours(u.getHours()+12);localStorage.setItem('roster_banner_dismiss',u.toISOString());$('upcomingBanner').innerHTML='';break}
     case'tog':if(t.dataset.sch==='true')mut(()=>{const ex=ov.find(o=>o.jobId===id&&o.date===sel&&o.type==='remove');if(ex){ov=ov.filter(o=>o!==ex);delO.push(ex.id)}else ov.push(touch({id:uid(),jobId:id,date:sel,type:'remove',note:''}))});break;
     case'addExtra':mut(()=>ov.push(touch({id:uid(),jobId:$('extraJob').value,date:sel,type:'add',note:$('extraNote').value.trim()})));break;
@@ -454,16 +668,27 @@ document.addEventListener('click',e=>{
     case'export':{const u=URL.createObjectURL(new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}));const l=document.createElement('a');l.href=u;l.download=`roster-backup-${fmt(new Date())}.json`;document.body.appendChild(l);l.click();l.remove();URL.revokeObjectURL(u);break}
     case'restore':{const f=$('restoreFileInput').files[0];if(!f){$('restoreStatus').textContent='Choose a backup file first.';break}
       const r=new FileReader();r.onload=()=>{try{merge(JSON.parse(r.result));renderAll();push(true);$('restoreStatus').textContent='Restored.'}catch(x){$('restoreStatus').textContent='Could not read that file.'}};r.readAsText(f);break}
+    // Debt
+    case'addDebt':showDebtForm(null);break;
+    case'editDebt':{const d=debtOf(id);if(d)showDebtForm(d);break}
+    case'delDebt':if(confirm('Delete this debt?'))mut(()=>{debts=debts.filter(d=>d.id!==id)});break;
+    case'saveDebt':{
+      const name=$('debtName').value.trim();if(!name)break;
+      const eid=$('debtEditId').value;
+      const rec={id:eid||uid(),name,balance:$('debtBalance').value,limit:$('debtLimit').value,mod:Date.now()};
+      mut(()=>{if(eid){const idx=debts.findIndex(d=>d.id===eid);if(idx>=0)debts[idx]=rec;else debts.push(rec)}else debts.push(rec)});
+      $('addDebtCard').style.display='none';break}
+    case'cancelDebt':$('addDebtCard').style.display='none';break;
   }
 });
+
 document.addEventListener('change',e=>{
   const t=e.target,f=t.dataset.f;if(!f)return;
   if(f==='hin')mut(()=>setHours(t.dataset.j,t.dataset.d,t.value));
   else if(f==='job'){const j=jobOf(t.dataset.id),k=t.dataset.k;if(!j)return;
     mut(()=>{j[k]=k==='name'?(t.value.trim()||'Job'):['anchor','pstart','ptype'].includes(k)?(t.value||j[k]):(Math.max(0,parseFloat(t.value))||0);if(k==='ptype'||k==='pstart')pOff=0;touch(j)})}
   else if(f==='pjob'){pJob=t.value;localStorage.setItem('roster_pjob',pJob);pOff=0;renderPay()}
-  else if(f==='set'){const k=t.dataset.k;
-    mut(()=>{S[k]=(k==='type'||k==='start')?(t.value||S[k]):(parseFloat(t.value)||(k==='otMult'?1.5:0));S.mod=Date.now();pOff=0})}
+  else if(f==='set'){const k=t.dataset.k;mut(()=>{S[k]=(k==='type'||k==='start')?(t.value||S[k]):(parseFloat(t.value)||(k==='otMult'?1.5:0));S.mod=Date.now();pOff=0})}
 });
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pull()});
 
@@ -472,6 +697,7 @@ clock();setInterval(clock,60000);
 let tx=null;const gr=$('calGrid');
 gr.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
 gr.addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>60){cal.m+=dx<0?1:-1;if(cal.m>11){cal.m=0;cal.y++}if(cal.m<0){cal.m=11;cal.y--}renderCal()}},{passive:true});
+
 load();sel=fmt(new Date());renderAll();
 if(syncUrl){$('syncUrlInput').value=syncUrl;$('copyLinkBtn').style.display='block';setSync('ok','Connected');pull();autoSync()}
 })();
