@@ -726,6 +726,18 @@ document.addEventListener('click',e=>{
     case'export':{const u=URL.createObjectURL(new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}));const l=document.createElement('a');l.href=u;l.download=`roster-backup-${fmt(new Date())}.json`;document.body.appendChild(l);l.click();l.remove();URL.revokeObjectURL(u);break}
     case'restore':{const f=$('restoreFileInput').files[0];if(!f){$('restoreStatus').textContent='Choose a backup file first.';break}
       const r=new FileReader();r.onload=()=>{try{merge(JSON.parse(r.result));renderAll();push(true);$('restoreStatus').textContent='Restored.'}catch(x){$('restoreStatus').textContent='Could not read that file.'}};r.readAsText(f);break}
+    // Gig income
+    case'addGig':showGigForm(null);break;
+    case'editGig':{const g=gigs.find(x=>x.id===id);if(g)showGigForm(g);break}
+    case'delGig':if(confirm('Delete this gig entry?'))mut(()=>{gigs=gigs.filter(g=>g.id!==id)});renderFinance();break;
+    case'saveGig':{
+      const src=$('gigSource').value.trim();const amt=$('gigAmount').value;
+      if(!src||!amt)break;
+      const eid=$('gigEditId').value;
+      const rec={id:eid||uid(),source:src,amount:parseFloat(amt)||0,date:$('gigDate').value||fmt(new Date()),note:$('gigNote').value.trim(),mod:Date.now()};
+      mut(()=>{if(eid){const idx=gigs.findIndex(g=>g.id===eid);if(idx>=0)gigs[idx]=rec;else gigs.push(rec)}else gigs.push(rec)});
+      $('addGigCard').style.display='none';renderFinance();break}
+    case'cancelGig':$('addGigCard').style.display='none';break;
     // Debt
     case'addDebt':showDebtForm(null);break;
     case'editDebt':{const d=debtOf(id);if(d)showDebtForm(d);break}
