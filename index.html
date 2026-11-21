@@ -216,6 +216,27 @@ select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.o
     <div class="card-title">By Job</div>
     <div id="finByJob"></div>
   </div>
+  <div class="card" style="border-color:var(--gold-dim)">
+    <div class="card-title">Gig &amp; Instant Income <span style="font-size:11px;text-transform:none;letter-spacing:0;cursor:pointer;color:var(--gold)" data-a="addGig">+ Log</span></div>
+    <div class="hint" style="margin-top:0;margin-bottom:10px">Amazon Flex, cash jobs, tips — anything not tied to an hourly schedule.</div>
+    <div id="gigList"></div>
+    <!-- Add gig form -->
+    <div id="addGigCard" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div class="duo" style="margin-bottom:10px">
+        <div><span class="lbl">Source / Label</span><input type="text" class="text-input" id="gigSource" placeholder="e.g. Amazon Flex"></div>
+        <div><span class="lbl">Amount Earned ($)</span><input type="number" inputmode="decimal" step="0.01" min="0" class="text-input" id="gigAmount" placeholder="0.00"></div>
+      </div>
+      <div class="duo" style="margin-bottom:10px">
+        <div><span class="lbl">Date</span><input type="date" class="text-input" id="gigDate"></div>
+        <div><span class="lbl">Note (optional)</span><input type="text" class="text-input" id="gigNote" placeholder="e.g. 3hr block"></div>
+      </div>
+      <input type="hidden" id="gigEditId">
+      <div style="display:flex;gap:8px">
+        <button class="add-btn" data-a="saveGig">Save</button>
+        <button class="add-btn secondary" data-a="cancelGig" style="width:auto;padding:13px 20px">Cancel</button>
+      </div>
+    </div>
+  </div>
   <div class="card">
     <div class="card-title">Year at a Glance</div>
     <div id="finYtd"></div>
@@ -305,7 +326,7 @@ const col=j=>PAL[j.colorIdx%PAL.length];
 const blank=()=>[0,0,0,0,0,0,0].map(()=>false);
 
 let jobs=[],delJ=[],ov=[],delO=[],H={},PH={},S={type:'biweekly',start:'',tax:0,otMult:1.5,mod:0};
-let debts=[];
+let debts=[],gigs=[];
 let syncUrl='',timer=null,pushT=null,sel=null,pOff=0,pJob=null;
 let finView='daily',finFrom='',finTo='';
 const n0=new Date();let cal={y:n0.getFullYear(),m:n0.getMonth()};
@@ -313,7 +334,7 @@ const n0=new Date();let cal={y:n0.getFullYear(),m:n0.getMonth()};
 function load(){
   jobs=ls('roster_jobs',[]);delJ=ls('roster_deleted_jobs',[]);ov=ls('roster_overrides',[]);delO=ls('roster_deleted_overrides',[]);
   H=ls('roster_hours',{});PH=ls('roster_paid',{});pJob=localStorage.getItem('roster_pjob');Object.assign(S,ls('roster_settings',{}));syncUrl=localStorage.getItem('roster_sync_url')||'';
-  debts=ls('roster_debts',[]);
+  debts=ls('roster_debts',[]);gigs=ls('roster_gigs',[]);
   const sun=fmt(sow(new Date()));
   if(!jobs.length){
     jobs=[{id:uid(),name:'Craigwiel Gardens',colorIdx:0,weeks:[[1,0,0,1,1,0,0].map(Boolean),[0,1,1,0,0,1,1].map(Boolean)],anchor:sun},
@@ -327,7 +348,7 @@ function save(local){
   localStorage.setItem('roster_jobs',JSON.stringify(jobs));localStorage.setItem('roster_deleted_jobs',JSON.stringify(delJ));
   localStorage.setItem('roster_overrides',JSON.stringify(ov));localStorage.setItem('roster_deleted_overrides',JSON.stringify(delO));
   localStorage.setItem('roster_hours',JSON.stringify(H));localStorage.setItem('roster_paid',JSON.stringify(PH));localStorage.setItem('roster_settings',JSON.stringify(S));
-  localStorage.setItem('roster_debts',JSON.stringify(debts));
+  localStorage.setItem('roster_debts',JSON.stringify(debts));localStorage.setItem('roster_gigs',JSON.stringify(gigs));
   if(!local&&syncUrl){clearTimeout(pushT);pushT=setTimeout(()=>push(true),800)}
 }
 const norm=j=>{j.rate=+j.rate||0;j.hrs=j.hrs==null?8:+j.hrs;j.ot=+j.ot||0;j.ptype=j.ptype||S.type||'biweekly';j.pstart=j.pstart||S.start||fmt(sow(new Date()))};
@@ -345,9 +366,10 @@ function merge(r){
   if(r.paid&&typeof r.paid==='object')Object.entries(r.paid).forEach(([k,v])=>{if(!PH[k]||(v.mod||0)>(PH[k].mod||0))PH[k]=v});
   if(r.settings&&(r.settings.mod||0)>(S.mod||0))S=Object.assign(S,r.settings);
   if(r.debts)debts=r.debts;
+  if(r.gigs)gigs=r.gigs;
   jobs.forEach(norm);save(true);
 }
-const payload=()=>({jobs,deletedJobIds:delJ,overrides:ov,deletedOverrideIds:delO,hours:H,paid:PH,settings:S,debts,updatedAt:new Date().toISOString()});
+const payload=()=>({jobs,deletedJobIds:delJ,overrides:ov,deletedOverrideIds:delO,hours:H,paid:PH,settings:S,debts,gigs,updatedAt:new Date().toISOString()});
 const stamp=()=>{$('lastSyncHint').textContent='Last synced '+new Date().toLocaleTimeString('en-US')};
 async function pull(){if(!syncUrl)return;setSync('busy','Syncing…');try{const r=await fetch(syncUrl+(syncUrl.includes('?')?'&':'?')+'_='+Date.now());merge(await r.json());await push(true);setSync('ok','Synced');stamp();const ae=document.activeElement;if(!ae||!/INPUT|SELECT/.test(ae.tagName))renderAll()}catch(e){setSync('err','Sync failed')}}
 async function push(silent){if(!syncUrl)return;if(!silent)setSync('busy','Syncing…');try{await fetch(syncUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload())});if(!silent){setSync('ok','Synced');stamp()}}catch(e){if(!silent)setSync('err','Sync failed')}}
@@ -380,7 +402,10 @@ function calc(list,s,e,upto){
 /* income for any date range */
 function incomeRange(s,e){
   const r=calc(jobs,s,e);
-  return{total:r.reduce((t,x)=>t+x.pay,0),hours:r.reduce((t,x)=>t+x.hours,0),byJob:r}
+  const sf=fmt(s),ef=fmt(e);
+  const gigTotal=gigs.filter(g=>g.date>=sf&&g.date<=ef).reduce((t,g)=>t+(+g.amount||0),0);
+  const gigsInRange=gigs.filter(g=>g.date>=sf&&g.date<=ef);
+  return{total:r.reduce((t,x)=>t+x.pay,0)+gigTotal,hours:r.reduce((t,x)=>t+x.hours,0),byJob:r,gigTotal,gigsInRange}
 }
 
 /* ===================== FINANCE PANEL ===================== */
@@ -401,9 +426,20 @@ function getFinRange(){
   return{s:td,e:td,label:'Today',sub:''}
 }
 
+function showGigForm(g){
+  const el=$('addGigCard');el.style.display='block';
+  $('gigSource').value=g?g.source:'';
+  $('gigAmount').value=g?g.amount:'';
+  $('gigDate').value=g?g.date:fmt(new Date());
+  $('gigNote').value=g?g.note:'';
+  $('gigEditId').value=g?g.id:'';
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),60);
+}
+
 function renderFinance(){
   const range=getFinRange();
-  const {total,hours,byJob}=incomeRange(range.s,range.e);
+  const {total,hours,byJob,gigTotal,gigsInRange}=incomeRange(range.s,range.e);
+  const hourlyTotal=total-gigTotal;
   const tax=(+S.tax||0)/100;
   const take=total*(1-tax);
   const days=Math.max(1,Math.round((range.e-range.s)/864e5)+1);
@@ -415,20 +451,42 @@ function renderFinance(){
       <div style="font-size:12px;color:var(--text-faint);margin-top:2px">${range.sub}</div>
     </div>
     <div class="big" style="margin-top:0">
-      <div class="stat green-bg"><div class="k">Gross Income</div><div class="v g">${money(total)}</div><div class="s">${nh(hours)} hrs</div></div>
+      <div class="stat green-bg"><div class="k">Total Income</div><div class="v g">${money(total)}</div><div class="s">${nh(hours)} hrs worked</div></div>
       <div class="stat"><div class="k">Est. Take-Home</div><div class="v">${money(take)}</div><div class="s">${tax>0?S.tax+'% tax est.':'No tax set'}</div></div>
     </div>
+    ${gigTotal>0?`<div class="big" style="margin-top:10px">
+      <div class="stat blue-bg"><div class="k">Hourly Pay</div><div class="v">${money(hourlyTotal)}</div><div class="s">from schedule</div></div>
+      <div class="stat"><div class="k">Gig Income</div><div class="v" style="color:var(--gold)">${money(gigTotal)}</div><div class="s">${gigsInRange.length} entr${gigsInRange.length===1?'y':'ies'}</div></div>
+    </div>`:''}
     ${days>1?`<div class="big" style="margin-top:10px">
       <div class="stat"><div class="k">Daily Average</div><div class="v b">${money(daily)}</div><div class="s">${days} days</div></div>
-      <div class="stat"><div class="k">Hourly Average</div><div class="v">${hours>0?money(total/hours):'—'}</div><div class="s">effective</div></div>
+      <div class="stat"><div class="k">Hourly Rate Eff.</div><div class="v">${hours>0?money(total/hours):'—'}</div><div class="s">all income</div></div>
     </div>`:''}`;
 
-  $('finByJob').innerHTML=byJob.length?byJob.map((x,i)=>{const c=col(x.job);return `
+  $('finByJob').innerHTML=byJob.filter(x=>x.pay>0||x.hours>0).map((x)=>{const c=col(x.job);return `
     <div class="inc-row">
       <div><div class="inc-label" style="display:flex;align-items:center;gap:7px"><span class="job-color-dot" style="background:${c.fg};margin-right:0"></span>${esc(x.job.name)}</div>
         <div class="inc-sub">${nh(x.hours)} hrs @ ${money(x.job.rate)}/hr${x.ot>0?' · '+nh(x.ot)+' OT':''}</div></div>
       <div class="inc-amt">${money(x.pay)}</div>
-    </div>`}).join(''):'<div class="hint" style="margin-top:0">No hours in this period.</div>';
+    </div>`}).join('')||'<div class="hint" style="margin-top:0">No hours in this period.</div>';
+
+  // Gig list for the range
+  const allGigs=[...gigs].sort((a,b)=>b.date.localeCompare(a.date));
+  $('gigList').innerHTML=allGigs.length?allGigs.map(g=>`
+    <div class="inc-row">
+      <div>
+        <div class="inc-label" style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:14px">⚡</span>${esc(g.source)}
+        </div>
+        <div class="inc-sub">${P(g.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}${g.note?' · '+esc(g.note):''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="inc-amt" style="color:var(--gold)">${money(+g.amount||0)}</div>
+        <span style="font-size:12px;color:var(--gold);cursor:pointer;font-weight:700" data-a="editGig" data-id="${g.id}">✏</span>
+        <span style="font-size:12px;color:var(--red);cursor:pointer" data-a="delGig" data-id="${g.id}">✕</span>
+      </div>
+    </div>`).join('')
+    :'<div class="hint" style="margin-top:0">No gig entries yet. Tap "+ Log" to add Amazon Flex, cash jobs, etc.</div>';
 
   // YTD by month
   const yr=new Date().getFullYear();
